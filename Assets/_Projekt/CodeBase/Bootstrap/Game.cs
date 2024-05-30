@@ -1,4 +1,6 @@
-﻿using CodeBase.SceneCreation;
+﻿using CodeBase.Factory;
+using CodeBase.SceneCreation;
+using CodeBase.Units;
 using UnityEngine;
 
 namespace CodeBase.Bootstrap {
@@ -11,6 +13,14 @@ namespace CodeBase.Bootstrap {
     private Camera _camera;
     [SerializeField]
     private TileContentFactory _contentFactory;
+    [SerializeField]
+    private UnitFactory _unitFactory;
+    [SerializeField]
+    [Range(0.1f, 10.0f)]
+    private float _spawnSpeed;
+    private float _spawnProgress;
+
+    private UnitsCollection _unitsCollection = new UnitsCollection();
     private void Start() => _board.Initialize(_size, _contentFactory);
 
     private void Update() {
@@ -19,6 +29,21 @@ namespace CodeBase.Bootstrap {
       } else if (Input.GetMouseButtonDown(1)) {
         HandleAlternativeTouch();
       }
+
+      _spawnProgress += _spawnSpeed * Time.deltaTime;
+
+      while (_spawnProgress >= 1.0f) {
+        _spawnProgress -= 1.0f;
+        SpawnUnit();
+      }
+      _unitsCollection.GameUpdate();
+    }
+
+    private void SpawnUnit() {
+      BoardTile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount));
+      Unit unit = _unitFactory.Get();
+      unit.SpawnOn(spawnPoint);
+      _unitsCollection.Add(unit);
     }
 
     private void HandleTouch() {
@@ -32,8 +57,14 @@ namespace CodeBase.Bootstrap {
     private void HandleAlternativeTouch() {
       BoardTile tile = _board.GetTile(TouchRay);
 
-      if (tile != null) {
+      if (tile == null) {
+        return;
+      }
+
+      if (Input.GetKey(KeyCode.LeftShift)) {
         _board.ToggleDestination(tile);
+      } else {
+        _board.ToggleSpawnPoint(tile);
       }
     }
 

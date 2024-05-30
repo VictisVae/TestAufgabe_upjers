@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb3bb1e75406415e97c91970a0051873, type: 3}
+  m_Script: {fileID: 11500000, guid: 516895a38c3943ccbfdeeaffd41b84db, type: 3}
   m_Name: TileContentFactory
   m_EditorClassIdentifier: 
   _destinationPrefab: {fileID: 6530899986603787245, guid: 1c4742e20ff4dc741b5f89b96db922ca,
@@ -17,4 +17,6 @@ MonoBehaviour:
   _emptyPrefab: {fileID: 5119588785846407027, guid: c38562a9caf8c2643b5821c007c7eaba,
     type: 3}
   _groundPrefab: {fileID: 5932788683659818096, guid: d8ddb47f0fe074b40a3a30cb84c7234f,
+    type: 3}
+  _spawnPointPrefab: {fileID: 450985398669808853, guid: 2ce787f2cfdce9b438b677a4ab8f45cc,
     type: 3}

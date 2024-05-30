@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CodeBase.Factory;
 using UnityEngine;
 
 namespace CodeBase.SceneCreation {
@@ -11,6 +12,7 @@ namespace CodeBase.SceneCreation {
     private Vector2Int _boardSize;
     private BoardTile[] _tiles;
     private TileContentFactory _contentFactory;
+    private readonly List<BoardTile> _spawnPoints = new List<BoardTile>();
 
     public void Initialize(Vector2Int size, TileContentFactory contentFactory) {
       _boardSize = size;
@@ -29,12 +31,13 @@ namespace CodeBase.SceneCreation {
       }
 
       ToggleDestination(_tiles[_tiles.Length / 2]);
+      ToggleSpawnPoint(_tiles[0]);
     }
 
     public bool FindPathsSuccessful() {
       foreach (BoardTile tile in _tiles) {
         if (tile.Content.Type == TileContentType.Destination) {
-          tile.ReceiveDestination();
+          tile.NullifyDestination();
           _searchFrontier.Enqueue(tile);
         } else {
           tile.ClearPath();
@@ -92,6 +95,18 @@ namespace CodeBase.SceneCreation {
       }
     }
 
+    public void ToggleSpawnPoint(BoardTile tile) {
+      if (tile.Content.Type == TileContentType.SpawnPoint) {
+        if (_spawnPoints.Count > 1) {
+          _spawnPoints.Remove(tile);
+          tile.Content = _contentFactory.Get(TileContentType.Empty);
+        }
+      } else if (tile.Content.Type == TileContentType.Empty) {
+        tile.Content = _contentFactory.Get(TileContentType.SpawnPoint);
+        _spawnPoints.Add(tile);
+      }
+    }
+
     public BoardTile GetTile(Ray ray) {
       if (Physics.Raycast(ray, out RaycastHit hit) == false) {
         return null;
@@ -103,6 +118,7 @@ namespace CodeBase.SceneCreation {
       return checkBoarders ? CastIntersectionInIndex(x, y) : null;
     }
 
+    public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
     private BoardTile CastIntersectionInIndex(int x, int y) => _tiles[x + y * _boardSize.x];
 
     private BoardTile CreateTile(int i, int x, Vector2 offset, int y) {
@@ -150,5 +166,7 @@ namespace CodeBase.SceneCreation {
         }
       }
     }
+
+    public int SpawnPointCount => _spawnPoints.Count;
   }
 }

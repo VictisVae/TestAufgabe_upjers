@@ -48,3 +48,5 @@ MonoBehaviour:
   _size: {x: 15, y: 15}
   _camera: {fileID: 0}
   _contentFactory: {fileID: 11400000, guid: e3cc80a9b973f1b4e928970fbab82457, type: 2}
+  _unitFactory: {fileID: 11400000, guid: fb2c4477f5c31ec41b9ed5fecf117022, type: 2}
+  _spawnSpeed: 6

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using CodeBase.Factory;
+using UnityEngine;
 
 namespace CodeBase.SceneCreation {
   public class TileContent : MonoBehaviour {

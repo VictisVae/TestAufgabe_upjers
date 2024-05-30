@@ -1,16 +1,19 @@
-﻿using UnityEngine;
+﻿using CodeBase.SceneCreation;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace CodeBase.SceneCreation {
+namespace CodeBase.Factory {
   [CreateAssetMenu]
-  public class TileContentFactory : ScriptableObject {
+  public class TileContentFactory : BaseFactory {
     [SerializeField]
     private TileContent _destinationPrefab;
     [SerializeField]
     private TileContent _emptyPrefab;
     [SerializeField]
     private TileContent _groundPrefab;
-    
+    [SerializeField]
+    private TileContent _spawnPointPrefab;
+
     private Scene _contentScene;
     public void Reclaim(TileContent content) => Destroy(content.gameObject);
 
@@ -19,30 +22,14 @@ namespace CodeBase.SceneCreation {
         TileContentType.Empty => Get(_emptyPrefab),
         TileContentType.Destination => Get(_destinationPrefab),
         TileContentType.Ground => Get(_groundPrefab),
+        TileContentType.SpawnPoint => Get(_spawnPointPrefab),
         _ => null
       };
 
     private TileContent Get(TileContent prefab) {
-      TileContent instance = Instantiate(prefab);
+      TileContent instance = CreateGameObjectInstance(prefab);
       instance.TileContentFactory = this;
-      MoveToFactoryScene(instance.gameObject);
       return instance;
-    }
-
-    private void MoveToFactoryScene(GameObject go) {
-      if (_contentScene.isLoaded == false) {
-        if (Application.isEditor) {
-          _contentScene = SceneManager.GetSceneByName(name);
-
-          if (_contentScene.isLoaded == false) {
-            _contentScene = SceneManager.CreateScene(name);
-          }
-        } else {
-          _contentScene = SceneManager.CreateScene(name);
-        }
-      }
-
-      SceneManager.MoveGameObjectToScene(go, _contentScene);
     }
   }
 }

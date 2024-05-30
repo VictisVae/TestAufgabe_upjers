@@ -2,6 +2,7 @@
   public enum TileContentType {
     Empty,
     Destination,
-    Ground
+    Ground,
+    SpawnPoint
   }
 }

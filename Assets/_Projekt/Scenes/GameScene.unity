@@ -511,6 +511,11 @@ PrefabInstance:
       propertyPath: _camera
       value: 
       objectReference: {fileID: 330585545}
+    - target: {fileID: 6295301167749481723, guid: 907b55c7146a9e143b3ba9fff9a3af4c,
+        type: 3}
+      propertyPath: _spawnSpeed
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

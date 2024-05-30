@@ -1,0 +1,28 @@
+﻿using CodeBase.SceneCreation;
+using CodeBase.Units;
+using UnityEngine;
+
+namespace CodeBase.Factory {
+  [CreateAssetMenu]
+  public class UnitFactory : BaseFactory {
+    [SerializeField]
+    private Unit _prefab;
+    [SerializeField]
+    [FloatRangeSlider(0.2f, 5f)]
+    private FloatRange _speed = new FloatRange(1.0f);
+    [SerializeField]
+    [FloatRangeSlider(0.5f, 2.0f)]
+    private FloatRange _scale = new FloatRange(1.0f);
+    [SerializeField]
+    [FloatRangeSlider(-0.4f, 0.4f)]
+    private FloatRange _pathOffset = new FloatRange(0.0f);
+    public void Reclaim(Unit unit) => Destroy(unit.gameObject);
+
+    public Unit Get() {
+      Unit instance = CreateGameObjectInstance(_prefab);
+      instance.UnitFactory = this;
+      instance.Initialise(_scale.RandomValueInRange, _pathOffset.RandomValueInRange, _speed.RandomValueInRange);
+      return instance;
+    }
+  }
+}
