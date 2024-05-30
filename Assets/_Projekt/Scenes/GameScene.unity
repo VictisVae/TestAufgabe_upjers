@@ -438,7 +438,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1734867347864266503
+--- !u!1001 &1339779951
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -506,6 +506,11 @@ PrefabInstance:
       propertyPath: _board
       value: 
       objectReference: {fileID: 162588114}
+    - target: {fileID: 6295301167749481723, guid: 907b55c7146a9e143b3ba9fff9a3af4c,
+        type: 3}
+      propertyPath: _camera
+      value: 
+      objectReference: {fileID: 330585545}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -534,6 +539,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 4201346438927373909, guid: eec3eb0083b885242a6b487adac4df0b,
+        type: 3}
+      propertyPath: _tilePrefab
+      value: 
+      objectReference: {fileID: 3964268486969816335, guid: fe85932a9f20cfc4ea90b3b09c2bf940,
+        type: 3}
     - target: {fileID: 5494709478725411660, guid: eec3eb0083b885242a6b487adac4df0b,
         type: 3}
       propertyPath: m_Name
@@ -602,4 +613,4 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 9156892594843118447}
-  - {fileID: 1734867347864266503}
+  - {fileID: 1339779951}

@@ -13,14 +13,15 @@ namespace CodeBase.SceneCreation {
       south._north = north;
     }
 
-    [SerializeField]
-    private Transform _arrow;
-    private BoardTile _north, _east, _south, _west, _nextPathTile;
-    private int _distance;
     private readonly Quaternion _northRotation = Quaternion.Euler(90f, 0, 0);
     private readonly Quaternion _eastRotation = Quaternion.Euler(90f, 90, 0);
     private readonly Quaternion _southRotation = Quaternion.Euler(90f, 180, 0);
     private readonly Quaternion _westRotation = Quaternion.Euler(90f, 270, 0);
+    [SerializeField]
+    private Transform _arrow;
+    private BoardTile _north, _east, _south, _west, _nextPathTile;
+    private int _distance;
+    private TileContent _content;
 
     public void ClearPath() {
       _distance = int.MaxValue;
@@ -45,8 +46,7 @@ namespace CodeBase.SceneCreation {
 
       _arrow.gameObject.Activate();
 
-      _arrow.localRotation = 
-        _nextPathTile == _north ? _northRotation :
+      _arrow.localRotation = _nextPathTile == _north ? _northRotation :
         _nextPathTile == _east ? _eastRotation :
         _nextPathTile == _south ? _southRotation : _westRotation;
     }
@@ -58,9 +58,21 @@ namespace CodeBase.SceneCreation {
 
       neighbor._distance = _distance - 1;
       neighbor._nextPathTile = this;
-      return neighbor;
+      return neighbor.Content.Type != TileContentType.Ground ? neighbor : null;
     }
 
+    public TileContent Content {
+      get => _content;
+      set {
+        if (_content != null) {
+          _content.Recycle();
+        }
+
+        _content = value;
+        _content.transform.localPosition = transform.localPosition;
+      }
+    }
+    
     public bool HasPath => _distance != int.MaxValue;
     public bool IsAlternative { get; set; }
   }
