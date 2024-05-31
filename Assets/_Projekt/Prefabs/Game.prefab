@@ -44,9 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd45d59d1764e3d9e9ec2603ebcc245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _factory: {fileID: 11400000, guid: fb2c4477f5c31ec41b9ed5fecf117022, type: 2}
   _board: {fileID: 0}
   _size: {x: 15, y: 15}
   _camera: {fileID: 0}
   _contentFactory: {fileID: 11400000, guid: e3cc80a9b973f1b4e928970fbab82457, type: 2}
-  _unitFactory: {fileID: 11400000, guid: fb2c4477f5c31ec41b9ed5fecf117022, type: 2}
-  _spawnSpeed: 6
+  _scenario: {fileID: 11400000, guid: 1073ca252b0448f48aff1a5c213e9bcb, type: 2}
+  _startingPlayerHealth: 10
+  _preparationTime: 15

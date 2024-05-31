@@ -31,12 +31,10 @@ namespace CodeBase.SceneCreation {
           BoardTile tile = CreateTile(i, x, offset, y);
           SetNeighbours(size, y, tile, i, x);
           SetAlternativePath(tile, x, y);
-          tile.Content = _contentFactory.Get(TileContentType.Empty);
         }
       }
 
-      ToggleDestination(_tiles[_tiles.Length / 2]);
-      ToggleSpawnPoint(_tiles[0]);
+      Clear();
     }
 
     public void GameUpdate() {
@@ -132,6 +130,16 @@ namespace CodeBase.SceneCreation {
 
     public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
     public BoardTile GetDestinationPoints(int index) => _destinationPoints[index];
+
+    public void Clear() {
+      foreach (var tile in _tiles) {
+        tile.Content = _contentFactory.Get(TileContentType.Empty);
+      }
+      _spawnPoints.Clear();
+      _contentToUpdate.Clear();
+      ToggleDestination(_tiles[_tiles.Length / 2]);
+      ToggleSpawnPoint(_tiles[0]);
+    }
 
     private bool FindPathsSuccessful() {
       foreach (BoardTile tile in _tiles) {
