@@ -2,6 +2,8 @@
 using CodeBase.SceneCreation;
 using CodeBase.Units;
 using UnityEngine;
+using Random = UnityEngine.Random;
+using UnitBase = CodeBase.Units.UnitBase;
 
 namespace CodeBase.Bootstrap {
   public class Game : MonoBehaviour {
@@ -38,6 +40,7 @@ namespace CodeBase.Bootstrap {
       }
 
       _unitsCollection.GameUpdate();
+      _board.GameUpdate();
     }
 
     private void SpawnUnit() {
@@ -57,7 +60,13 @@ namespace CodeBase.Bootstrap {
     private void HandleTouch() {
       BoardTile tile = _board.GetTile(TouchRay);
 
-      if (tile != null) {
+      if (tile == null) {
+        return;
+      }
+      
+      if (Input.GetKey(KeyCode.LeftShift)) {
+        _board.ToggleTower(tile, () => _unitsCollection.Targets);
+      } else {
         _board.ToggleGround(tile);
       }
     }

@@ -13,6 +13,8 @@ namespace CodeBase.Factory {
     private TileContent _groundPrefab;
     [SerializeField]
     private TileContent _spawnPointPrefab;
+    [SerializeField]
+    private TileContent _towerPrefab;
 
     private Scene _contentScene;
     public void Reclaim(TileContent content) => Destroy(content.gameObject);
@@ -23,6 +25,7 @@ namespace CodeBase.Factory {
         TileContentType.Destination => Get(_destinationPrefab),
         TileContentType.Ground => Get(_groundPrefab),
         TileContentType.SpawnPoint => Get(_spawnPointPrefab),
+        TileContentType.Tower => Get(_towerPrefab),
         _ => null
       };
 

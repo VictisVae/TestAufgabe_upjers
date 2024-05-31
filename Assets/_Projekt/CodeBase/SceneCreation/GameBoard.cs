@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using CodeBase.Factory;
+using CodeBase.TowerBehaviour;
 using UnityEngine;
 using static CodeBase.Extensions.Constants.Math;
 
@@ -8,7 +10,7 @@ namespace CodeBase.SceneCreation {
     private readonly Queue<BoardTile> _searchFrontier = new Queue<BoardTile>();
     private readonly List<BoardTile> _spawnPoints = new List<BoardTile>();
     private readonly List<BoardTile> _destinationPoints = new List<BoardTile>();
-    
+    private readonly List<TileContent> _contentToUpdate = new List<TileContent>();
     [SerializeField]
     private Transform _ground;
     [SerializeField]
@@ -37,9 +39,16 @@ namespace CodeBase.SceneCreation {
       ToggleSpawnPoint(_tiles[0]);
     }
 
+    public void GameUpdate() {
+      foreach (TileContent content in _contentToUpdate) {
+        content.GameUpdate();
+      }
+    }
+
     public void ToggleDestination(BoardTile tile) {
       if (tile.Content.Type == TileContentType.Destination) {
         tile.Content = _contentFactory.Get(TileContentType.Empty);
+
         if (_destinationPoints.Count > 1) {
           _destinationPoints.Remove(tile);
           tile.Content = _contentFactory.Get(TileContentType.Empty);
@@ -55,7 +64,7 @@ namespace CodeBase.SceneCreation {
         tile.Content = _contentFactory.Get(TileContentType.Destination);
         FindPathsSuccessful();
       }
-      
+
       _destinationPoints.Add(tile);
     }
 
@@ -75,6 +84,29 @@ namespace CodeBase.SceneCreation {
       }
     }
 
+    public void ToggleTower(BoardTile tile, Func<List<TargetPoint>> targets) {
+      if (tile.Content.Type == TileContentType.Tower) {
+        _contentToUpdate.Remove(tile.Content);
+        tile.Content = _contentFactory.Get(TileContentType.Empty);
+        FindPathsSuccessful();
+      } else if (tile.Content.Type == TileContentType.Empty) {
+        tile.Content = _contentFactory.Get(TileContentType.Tower);
+
+        if (FindPathsSuccessful()) {
+          _contentToUpdate.Add(tile.Content);
+          ((Tower)tile.Content).ReceiveTargets(targets);
+          return;
+        }
+
+        tile.Content = _contentFactory.Get(TileContentType.Empty);
+        FindPathsSuccessful();
+      } else if (tile.Content.Type == TileContentType.Ground) {
+        tile.Content = _contentFactory.Get(TileContentType.Tower);
+        ((Tower)tile.Content).ReceiveTargets(targets);
+        _contentToUpdate.Add(tile.Content);
+      }
+    }
+
     public void ToggleSpawnPoint(BoardTile tile) {
       if (tile.Content.Type == TileContentType.SpawnPoint) {
         if (_spawnPoints.Count > 1) {
@@ -88,7 +120,7 @@ namespace CodeBase.SceneCreation {
     }
 
     public BoardTile GetTile(Ray ray) {
-      if (Physics.Raycast(ray, out RaycastHit hit) == false) {
+      if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, 1) == false) {
         return null;
       }
 

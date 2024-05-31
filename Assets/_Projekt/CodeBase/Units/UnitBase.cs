@@ -1,14 +1,15 @@
 ﻿using CodeBase.Factory;
 using CodeBase.SceneCreation;
+using CodeBase.TowerBehaviour;
 using UnityEngine;
 
 namespace CodeBase.Units {
   public abstract class UnitBase : MonoBehaviour {
     [SerializeField]
     protected Transform _model;
-    
     protected UnitMovement _unitMovement;
     protected UnitFactory _unitFactory;
+    private void Awake() => TargetPoint = GetComponent<TargetPoint>();
 
     public virtual void Initialise(UnitFactory factory, float scale, float pathOffset, float speed) {
       _unitFactory = factory;
@@ -23,5 +24,6 @@ namespace CodeBase.Units {
     }
 
     public abstract bool GameUpdate();
+    public TargetPoint TargetPoint { get; private set; }
   }
 }

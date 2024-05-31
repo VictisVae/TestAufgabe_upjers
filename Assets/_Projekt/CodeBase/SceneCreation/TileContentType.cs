@@ -3,6 +3,7 @@
     Empty,
     Destination,
     Ground,
-    SpawnPoint
+    SpawnPoint,
+    Tower
   }
 }

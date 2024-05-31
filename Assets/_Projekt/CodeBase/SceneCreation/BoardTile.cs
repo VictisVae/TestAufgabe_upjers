@@ -64,7 +64,7 @@ namespace CodeBase.SceneCreation {
       neighbor.NextTileOnOnPath = this;
       neighbor.ExitPoint = GetQuadSide(neighbor, direction);
       neighbor.PathDirection = direction;
-      return neighbor.Content.Type != TileContentType.Ground ? neighbor : null;
+      return neighbor.Content.IsBlockingPath ? null : neighbor;
     }
 
     private static Vector3 GetQuadSide(BoardTile neighbor, Direction direction) => neighbor.transform.localPosition + direction.GetHalfVector();

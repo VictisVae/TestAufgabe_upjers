@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5893857943585285714}
   - component: {fileID: 6790995768136448228}
+  - component: {fileID: -3855155529864457162}
   m_Layer: 0
   m_Name: GroundUnit
   m_TagString: Untagged
@@ -46,6 +47,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _model: {fileID: 1740415716626729511}
+--- !u!114 &-3855155529864457162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079489324592744311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4299f23437604b79b38c9cad886cee73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3427425471429079943
 GameObject:
   m_ObjectHideFlags: 0
