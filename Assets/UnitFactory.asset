@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c97ef667b84211a8d3b9eb3bbaf574, type: 3}
   m_Name: UnitFactory
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 6790995768136448228, guid: d3f0d5f00a44d3144bcda7ae247c1f16, type: 3}
+  _groundUnitPrefab: {fileID: 6790995768136448228, guid: d3f0d5f00a44d3144bcda7ae247c1f16,
+    type: 3}
+  _airUnitPrefab: {fileID: 4813001223866782638, guid: 2eef313ef520cbf4c80e436fc4e3de15,
+    type: 3}
   _speed:
     _min: 1.1585793
     _max: 1.5550274

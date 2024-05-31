@@ -1,6 +1,7 @@
 ﻿using CodeBase.Extensions;
 using CodeBase.Units;
 using UnityEngine;
+using static CodeBase.Extensions.Constants.Math;
 
 namespace CodeBase.SceneCreation {
   public class BoardTile : MonoBehaviour {
@@ -14,10 +15,11 @@ namespace CodeBase.SceneCreation {
       south._north = north;
     }
 
-    private readonly Quaternion _northRotation = Quaternion.Euler(90f, 0, 0);
-    private readonly Quaternion _eastRotation = Quaternion.Euler(90f, 90, 0);
-    private readonly Quaternion _southRotation = Quaternion.Euler(90f, 180, 0);
-    private readonly Quaternion _westRotation = Quaternion.Euler(90f, 270, 0);
+    private readonly Quaternion _northRotation = Quaternion.Euler(QuarterTurn, 0, 0);
+    private readonly Quaternion _eastRotation = Quaternion.Euler(QuarterTurn, QuarterTurn, 0);
+    private readonly Quaternion _southRotation = Quaternion.Euler(QuarterTurn, HalfTurn, 0);
+    private readonly Quaternion _westRotation = Quaternion.Euler(QuarterTurn, TripleQuarterTurn, 0);
+    
     [SerializeField]
     private Transform _arrow;
     private BoardTile _north, _east, _south, _west;
@@ -80,7 +82,7 @@ namespace CodeBase.SceneCreation {
     public Direction PathDirection { get; private set; }
     public BoardTile NextTileOnOnPath { get; private set; }
     public bool HasPath => _distance != int.MaxValue;
-    public Vector3 ExitPoint { get; set; }
+    public Vector3 ExitPoint { get; private set; }
     public bool IsAlternative { get; set; }
   }
 }

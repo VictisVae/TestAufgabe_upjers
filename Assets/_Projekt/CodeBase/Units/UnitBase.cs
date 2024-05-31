@@ -5,12 +5,12 @@ using UnityEngine;
 namespace CodeBase.Units {
   public abstract class UnitBase : MonoBehaviour {
     [SerializeField]
-    private Transform _model;
+    protected Transform _model;
     
     protected UnitMovement _unitMovement;
     protected UnitFactory _unitFactory;
 
-    public void Initialise(UnitFactory factory, float scale, float pathOffset, float speed) {
+    public virtual void Initialise(UnitFactory factory, float scale, float pathOffset, float speed) {
       _unitFactory = factory;
       _unitMovement = new UnitMovement(transform, _model, pathOffset, speed);
       _model.localScale = new Vector3(scale, scale, scale);

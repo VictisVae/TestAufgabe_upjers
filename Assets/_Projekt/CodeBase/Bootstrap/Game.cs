@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace CodeBase.Bootstrap {
   public class Game : MonoBehaviour {
+    private readonly UnitsCollection _unitsCollection = new UnitsCollection();
+    
     [SerializeField]
     private GameBoard _board;
     [SerializeField]
@@ -19,8 +21,6 @@ namespace CodeBase.Bootstrap {
     [Range(0.1f, 10.0f)]
     private float _spawnSpeed;
     private float _spawnProgress;
-
-    private UnitsCollection _unitsCollection = new UnitsCollection();
     private void Start() => _board.Initialize(_size, _contentFactory);
 
     private void Update() {
@@ -36,14 +36,22 @@ namespace CodeBase.Bootstrap {
         _spawnProgress -= 1.0f;
         SpawnUnit();
       }
+
       _unitsCollection.GameUpdate();
     }
 
     private void SpawnUnit() {
       BoardTile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount));
-      GroundUnit groundUnit = _unitFactory.Get();
-      groundUnit.SpawnItOn(spawnPoint);
-      _unitsCollection.Add(groundUnit);
+      BoardTile destinationPoint = _board.GetDestinationPoints(Random.Range(0, _board.DestinationPointCount));
+      UnitBase unitBase = _unitFactory.Get();
+
+      if (unitBase is AirUnit airUnit) {
+        airUnit.SpawnItOn(spawnPoint, destinationPoint);
+      } else {
+        unitBase.SpawnItOn(spawnPoint);
+      }
+      
+      _unitsCollection.Add(unitBase);
     }
 
     private void HandleTouch() {

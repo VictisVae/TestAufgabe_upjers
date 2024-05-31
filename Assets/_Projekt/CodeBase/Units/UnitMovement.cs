@@ -5,15 +5,15 @@ using static CodeBase.Extensions.Constants.Math;
 
 namespace CodeBase.Units {
   public class UnitMovement {
+    protected readonly Transform _unitTransform;
+    protected readonly float _speed;
     private readonly Transform _modelTransform;
-    private readonly Transform _unitTransform;
     private readonly float _pathOffset;
-    private readonly float _speed;
-    private BoardTile _tileFrom;
+    protected BoardTile _tileFrom, _tileTo;
+    protected Vector3 _positionFrom, _positionTo;
+    protected float _progressFactor;
     private Direction _direction;
-    private Vector3 _positionFrom, _positionTo;
     private float _directionAngleFrom, _directionAngleTo;
-    private float _progressFactor;
     private float _progress;
 
     public UnitMovement(Transform unitTransform, Transform modelTransform, float pathOffset, float speed) {
@@ -25,11 +25,11 @@ namespace CodeBase.Units {
 
     public void SetDirectionTiles(BoardTile tileFrom, BoardTile tileTo) {
       _tileFrom = tileFrom;
-      TileTo = tileTo;
+      _tileTo = tileTo;
       _progress = 0f;
     }
 
-    public void PrepareIntro() {
+    public virtual void PrepareIntro() {
       _positionFrom = _tileFrom.transform.localPosition;
       _positionTo = _tileFrom.ExitPoint;
       _direction = _tileFrom.PathDirection;
@@ -41,11 +41,11 @@ namespace CodeBase.Units {
     }
 
     public void PrepareNextState() {
-      _tileFrom = TileTo;
-      TileTo = TileTo.NextTileOnOnPath;
+      _tileFrom = _tileTo;
+      _tileTo = _tileTo.NextTileOnOnPath;
       _positionFrom = _positionTo;
 
-      if (TileTo == null) {
+      if (_tileTo == null) {
         PrepareOutro();
         return;
       }
@@ -74,11 +74,11 @@ namespace CodeBase.Units {
 
     public void UpdateProgress() => _progress += Time.deltaTime * _progressFactor;
     public Vector3 GetSmoothMovement() => Vector3.LerpUnclamped(_positionFrom, _positionTo, _progress);
-    public float GetSmoothAngle() => Mathf.LerpUnclamped(_directionAngleFrom, _directionAngleTo, _progress);
+    public Quaternion GetSmoothRotation() => Quaternion.Euler(0.0f, SmoothAngle, 0.0f);
     public void NullifyMovement() => _progress = (_progress - 1.0f) / _progressFactor;
     public void MultiplyProgress() => _progress *= _progressFactor;
 
-    private void PrepareOutro() {
+    protected virtual void PrepareOutro() {
       _positionTo = _tileFrom.transform.localPosition;
       DirectionChange = DirectionChange.None;
       _directionAngleTo = _direction.GetAngle();
@@ -114,8 +114,9 @@ namespace CodeBase.Units {
       _progressFactor = _speed / (Mathf.PI * Mathf.Max(Mathf.Abs(_pathOffset), 0.2f));
     }
 
-    public BoardTile TileTo { get; private set; }
+    public BoardTile TileTo => _tileTo;
     public DirectionChange DirectionChange { get; private set; }
     public bool IsProgressExists => _progress >= 1;
+    private float SmoothAngle => Mathf.LerpUnclamped(_directionAngleFrom, _directionAngleTo, _progress);
   }
 }

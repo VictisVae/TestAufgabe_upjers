@@ -1,5 +1,4 @@
-﻿using CodeBase.SceneCreation;
-using CodeBase.Units;
+﻿using CodeBase.Units;
 using UnityEngine;
 using static CodeBase.Extensions.Constants.Math;
 
@@ -17,10 +16,10 @@ namespace CodeBase.Extensions {
       Quaternion.Euler(0, TripleQuarterTurn, 0)
     };
     private static readonly Vector3[] HalfVectors = {
-      Vector3.forward * 0.5f,
-      Vector3.right * 0.5f,
-      Vector3.back * 0.5f,
-      Vector3.left * 0.5f
+      Vector3.forward * Half,
+      Vector3.right * Half,
+      Vector3.back * Half,
+      Vector3.left * Half
     };
     public static Quaternion GetRotation(this Direction direction) => Rotations[(int)direction];
 

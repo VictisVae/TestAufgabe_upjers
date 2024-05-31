@@ -1,10 +1,14 @@
 using System.Collections.Generic;
 using CodeBase.Factory;
 using UnityEngine;
+using static CodeBase.Extensions.Constants.Math;
 
 namespace CodeBase.SceneCreation {
   public class GameBoard : MonoBehaviour {
     private readonly Queue<BoardTile> _searchFrontier = new Queue<BoardTile>();
+    private readonly List<BoardTile> _spawnPoints = new List<BoardTile>();
+    private readonly List<BoardTile> _destinationPoints = new List<BoardTile>();
+    
     [SerializeField]
     private Transform _ground;
     [SerializeField]
@@ -12,12 +16,11 @@ namespace CodeBase.SceneCreation {
     private Vector2Int _boardSize;
     private BoardTile[] _tiles;
     private TileContentFactory _contentFactory;
-    private readonly List<BoardTile> _spawnPoints = new List<BoardTile>();
 
     public void Initialize(Vector2Int size, TileContentFactory contentFactory) {
       _boardSize = size;
       _ground.localScale = new Vector3(size.x, size.y, 1.0f);
-      Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
+      Vector2 offset = new Vector2((size.x - 1) * Half, (size.y - 1) * Half);
       _tiles = new BoardTile[size.x * size.y];
       _contentFactory = contentFactory;
 
@@ -34,38 +37,13 @@ namespace CodeBase.SceneCreation {
       ToggleSpawnPoint(_tiles[0]);
     }
 
-    public bool FindPathsSuccessful() {
-      foreach (BoardTile tile in _tiles) {
-        if (tile.Content.Type == TileContentType.Destination) {
-          tile.NullifyDestination();
-          _searchFrontier.Enqueue(tile);
-        } else {
-          tile.ClearPath();
-        }
-      }
-
-      if (_searchFrontier.Count == 0) {
-        return false;
-      }
-
-      FrontierSearching();
-
-      foreach (BoardTile tile in _tiles) {
-        if (tile.HasPath == false) {
-          return false;
-        }
-      }
-
-      foreach (BoardTile tile in _tiles) {
-        tile.ShowPath();
-      }
-
-      return true;
-    }
-
     public void ToggleDestination(BoardTile tile) {
       if (tile.Content.Type == TileContentType.Destination) {
         tile.Content = _contentFactory.Get(TileContentType.Empty);
+        if (_destinationPoints.Count > 1) {
+          _destinationPoints.Remove(tile);
+          tile.Content = _contentFactory.Get(TileContentType.Empty);
+        }
 
         if (FindPathsSuccessful()) {
           return;
@@ -77,6 +55,8 @@ namespace CodeBase.SceneCreation {
         tile.Content = _contentFactory.Get(TileContentType.Destination);
         FindPathsSuccessful();
       }
+      
+      _destinationPoints.Add(tile);
     }
 
     public void ToggleGround(BoardTile tile) {
@@ -112,13 +92,44 @@ namespace CodeBase.SceneCreation {
         return null;
       }
 
-      int x = (int)(hit.point.x + _boardSize.x * 0.5f);
-      int y = (int)(hit.point.z + _boardSize.y * 0.5f);
+      int x = (int)(hit.point.x + _boardSize.x * Half);
+      int y = (int)(hit.point.z + _boardSize.y * Half);
       bool checkBoarders = x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
       return checkBoarders ? CastIntersectionInIndex(x, y) : null;
     }
 
     public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
+    public BoardTile GetDestinationPoints(int index) => _destinationPoints[index];
+
+    private bool FindPathsSuccessful() {
+      foreach (BoardTile tile in _tiles) {
+        if (tile.Content.Type == TileContentType.Destination) {
+          tile.NullifyDestination();
+          _searchFrontier.Enqueue(tile);
+        } else {
+          tile.ClearPath();
+        }
+      }
+
+      if (_searchFrontier.Count == 0) {
+        return false;
+      }
+
+      FrontierSearching();
+
+      foreach (BoardTile tile in _tiles) {
+        if (tile.HasPath == false) {
+          return false;
+        }
+      }
+
+      foreach (BoardTile tile in _tiles) {
+        tile.ShowPath();
+      }
+
+      return true;
+    }
+
     private BoardTile CastIntersectionInIndex(int x, int y) => _tiles[x + y * _boardSize.x];
 
     private BoardTile CreateTile(int i, int x, Vector2 offset, int y) {
@@ -168,5 +179,6 @@ namespace CodeBase.SceneCreation {
     }
 
     public int SpawnPointCount => _spawnPoints.Count;
+    public int DestinationPointCount => _destinationPoints.Count;
   }
 }
