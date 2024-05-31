@@ -41,9 +41,9 @@ namespace CodeBase.Bootstrap {
 
     private void SpawnUnit() {
       BoardTile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount));
-      Unit unit = _unitFactory.Get();
-      unit.SpawnOn(spawnPoint);
-      _unitsCollection.Add(unit);
+      GroundUnit groundUnit = _unitFactory.Get();
+      groundUnit.SpawnItOn(spawnPoint);
+      _unitsCollection.Add(groundUnit);
     }
 
     private void HandleTouch() {

@@ -1,5 +1,7 @@
 ﻿using CodeBase.SceneCreation;
+using CodeBase.Units;
 using UnityEngine;
+using static CodeBase.Extensions.Constants.Math;
 
 namespace CodeBase.Extensions {
   public static class Extensions {
@@ -10,9 +12,9 @@ namespace CodeBase.Extensions {
   public static class DirectionExtensions {
     private static readonly Quaternion[] Rotations = {
       Quaternion.identity,
-      Quaternion.Euler(0, 90.0f, 0),
-      Quaternion.Euler(0, 180.0f, 0),
-      Quaternion.Euler(0, 270.0f, 0)
+      Quaternion.Euler(0, QuarterTurn, 0),
+      Quaternion.Euler(0, HalfTurn, 0),
+      Quaternion.Euler(0, TripleQuarterTurn, 0)
     };
     private static readonly Vector3[] HalfVectors = {
       Vector3.forward * 0.5f,
@@ -38,7 +40,7 @@ namespace CodeBase.Extensions {
       return DirectionChange.TurnAround;
     }
 
-    public static float GetAngle(this Direction direction) => (float)direction * 90.0f;
+    public static float GetAngle(this Direction direction) => (float)direction * QuarterTurn;
     public static Vector3 GetHalfVector(this Direction direction) => HalfVectors[(int)direction];
   }
 }

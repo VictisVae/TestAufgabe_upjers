@@ -1,4 +1,5 @@
-﻿using CodeBase.SceneCreation;
+﻿using CodeBase.Data;
+using CodeBase.SceneCreation;
 using CodeBase.Units;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace CodeBase.Factory {
   [CreateAssetMenu]
   public class UnitFactory : BaseFactory {
     [SerializeField]
-    private Unit _prefab;
+    private GroundUnit _prefab;
     [SerializeField]
     [FloatRangeSlider(0.2f, 5f)]
     private FloatRange _speed = new FloatRange(1.0f);
@@ -16,12 +17,11 @@ namespace CodeBase.Factory {
     [SerializeField]
     [FloatRangeSlider(-0.4f, 0.4f)]
     private FloatRange _pathOffset = new FloatRange(0.0f);
-    public void Reclaim(Unit unit) => Destroy(unit.gameObject);
+    public void Reclaim(GroundUnit groundUnit) => Destroy(groundUnit.gameObject);
 
-    public Unit Get() {
-      Unit instance = CreateGameObjectInstance(_prefab);
-      instance.UnitFactory = this;
-      instance.Initialise(_scale.RandomValueInRange, _pathOffset.RandomValueInRange, _speed.RandomValueInRange);
+    public GroundUnit Get() {
+      GroundUnit instance = CreateGameObjectInstance(_prefab);
+      instance.Initialise(this, _scale.RandomValueInRange, _pathOffset.RandomValueInRange, _speed.RandomValueInRange);
       return instance;
     }
   }

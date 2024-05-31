@@ -2,11 +2,9 @@
 
 namespace CodeBase.Units {
   public class UnitsCollection {
-    private List<Unit> _units = new List<Unit>();
+    private List<UnitBase> _units = new List<UnitBase>();
 
-    public void Add(Unit unit) {
-      _units.Add(unit);
-    }
+    public void Add(UnitBase groundUnit) => _units.Add(groundUnit);
 
     public void GameUpdate() {
       for (int i = 0; i < _units.Count; i++) {
