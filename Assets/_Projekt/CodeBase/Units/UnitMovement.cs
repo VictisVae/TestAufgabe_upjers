@@ -47,14 +47,16 @@ namespace CodeBase.Units {
 
       if (_tileTo == null) {
         PrepareOutro();
-        return;
       }
 
       _positionTo = _tileFrom.ExitPoint;
       DirectionChange = _direction.GetDirectionChangeTo(_tileFrom.PathDirection);
       _direction = _tileFrom.PathDirection;
       _directionAngleFrom = _directionAngleTo;
+      HandleDirection();
+    }
 
+    private void HandleDirection() {
       switch (DirectionChange) {
         case DirectionChange.None:
           PrepareForward();
@@ -97,21 +99,21 @@ namespace CodeBase.Units {
       _directionAngleTo = _directionAngleFrom + QuarterTurn;
       _modelTransform.localPosition = new Vector3(_pathOffset - Half, 0);
       _unitTransform.localPosition = _positionFrom + _direction.GetHalfVector();
-      _progressFactor = _speed / (Mathf.PI * Half * (Half - _pathOffset));
+      _progressFactor = _speed * Constants.UnitDirectionMultiplier;
     }
 
     private void PrepareTurnLeft() {
       _directionAngleTo = _directionAngleFrom - QuarterTurn;
       _modelTransform.localPosition = new Vector3(_pathOffset + Half, 0);
       _unitTransform.localPosition = _positionFrom + _direction.GetHalfVector();
-      _progressFactor = _speed / (Mathf.PI * Half * (Half - _pathOffset));
+      _progressFactor = _speed * Constants.UnitDirectionMultiplier;
     }
 
     private void PrepareTurnAround() {
       _directionAngleTo = _directionAngleFrom + (_pathOffset < 0.0f ? HalfTurn : -HalfTurn);
       _modelTransform.localPosition = new Vector3(_pathOffset, 0);
       _unitTransform.localPosition = _positionFrom;
-      _progressFactor = _speed / (Mathf.PI * Mathf.Max(Mathf.Abs(_pathOffset), 0.2f));
+      _progressFactor = _speed * Constants.UnitDirectionMultiplier;
     }
 
     public BoardTile TileTo => _tileTo;

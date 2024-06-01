@@ -12,7 +12,7 @@ namespace CodeBase.Factory {
     public void Reclaim(UnitBase unit) => Destroy(unit.gameObject);
 
     public UnitBase Get(UnitType type) {
-      var config = GetConfig(type);
+      UnitConfig config = GetConfig(type);
       UnitBase instance = CreateGameObjectInstance(config._prefab);
       instance.Initialise(this, config.Scale.RandomValueInRange, config.PathOffset.RandomValueInRange, config.Speed.RandomValueInRange);
       return instance;
@@ -29,13 +29,13 @@ namespace CodeBase.Factory {
 
     [Serializable]
     private class UnitConfig {
+      public UnitBase _prefab;
       [FloatRangeSlider(0.5f, 2.0f)]
       public FloatRange Scale = new FloatRange(1.0f);
       [FloatRangeSlider(-0.4f, 0.4f)]
       public FloatRange PathOffset = new FloatRange(0.0f);
       [FloatRangeSlider(0.2f, 5.0f)]
       public FloatRange Speed = new FloatRange(1.0f);
-      public UnitBase _prefab;
     }
   }
 }

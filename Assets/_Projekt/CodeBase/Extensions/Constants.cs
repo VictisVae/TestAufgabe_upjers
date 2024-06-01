@@ -1,5 +1,7 @@
 ﻿namespace CodeBase.Extensions {
   public static class Constants {
+    public const float UnitDirectionMultiplier = 0.8f;
+
     public static class Math {
       public const float Half = 0.5f;
       public const float QuarterTurn = 90.0f;

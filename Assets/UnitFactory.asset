@@ -13,42 +13,44 @@ MonoBehaviour:
   m_Name: UnitFactory
   m_EditorClassIdentifier: 
   _small:
+    _prefab: {fileID: 5661853808802182518, guid: 72ffc0d0d2506774985d5164df8b3b95,
+      type: 3}
     Scale:
       _min: 0.5
       _max: 0.8
     PathOffset:
-      _min: -0.4
-      _max: 0.4
+      _min: -0.3
+      _max: 0.3
     Speed:
-      _min: 0.5
-      _max: 1.5
-    _prefab: {fileID: 5661853808802182518, guid: 72ffc0d0d2506774985d5164df8b3b95,
-      type: 3}
+      _min: 2
+      _max: 3
   _medium:
-    Scale:
-      _min: 1
-      _max: 1.2
-    PathOffset:
-      _min: -0.2
-      _max: 0.2
-    Speed:
-      _min: 0.5
-      _max: 1.2
     _prefab: {fileID: 2214460684964403632, guid: b81018e7b0898324a950cdc524559e7a,
       type: 3}
-  _large:
     Scale:
-      _min: 1.5
-      _max: 2
+      _min: 1
+      _max: 1.4
     PathOffset:
       _min: -0.1
       _max: 0.1
     Speed:
-      _min: 0.2
-      _max: 0.5
+      _min: 1.2
+      _max: 1.5
+  _large:
     _prefab: {fileID: 5209452421714089796, guid: 0b43989d39b3fd446b397d8694692217,
       type: 3}
+    Scale:
+      _min: 2
+      _max: 2
+    PathOffset:
+      _min: 0
+      _max: 0
+    Speed:
+      _min: 0.5
+      _max: 0.75
   _air:
+    _prefab: {fileID: 4813001223866782638, guid: 2eef313ef520cbf4c80e436fc4e3de15,
+      type: 3}
     Scale:
       _min: 1
       _max: 1
@@ -58,5 +60,3 @@ MonoBehaviour:
     Speed:
       _min: 0.8
       _max: 1.2
-    _prefab: {fileID: 4813001223866782638, guid: 2eef313ef520cbf4c80e436fc4e3de15,
-      type: 3}
