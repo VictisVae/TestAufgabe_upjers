@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using CodeBase.Infrastructure.Factory;
 using CodeBase.TowerBehaviour;
 using CodeBase.Utilities;
 using UnityEngine;
 
-namespace CodeBase.SceneCreation {
+namespace CodeBase.BoardContent {
   [RequireComponent(typeof(TargetPoint))]
   public class Tower : TileContent {
     [SerializeField]
@@ -79,7 +80,7 @@ namespace CodeBase.SceneCreation {
 
     private float CalculateDistance(Vector3 turretPosition, Vector3 targetPosition) => Vector3.Distance(turretPosition, targetPosition);
 
-    private void OnDrawGizmosSelected() {
+    private void OnDrawGizmos() {
       Gizmos.color = Color.yellow;
       Vector3 position = transform.localPosition;
       position.y += 0.01f;

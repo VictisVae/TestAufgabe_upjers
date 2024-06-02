@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 595b0474208146f8a91929e03b96a2be, type: 3}
-  m_Name: BoardConfig
+  m_Script: {fileID: 11500000, guid: 7f6c650f322c4e95936e76f3e3ebcb58, type: 3}
+  m_Name: DoubleTower
   m_EditorClassIdentifier: 
-  BoardTilePrefab: {fileID: 3964268486969816335, guid: fe85932a9f20cfc4ea90b3b09c2bf940,
-    type: 3}
-  BoardSize: {x: 18, y: 15}
+  ContentType: 4
+  BuildScheme:
+    _towerType: 1
+  Prefab: {fileID: 3207852529346731881, guid: f370936b6318fef45a928eaf5c54f45e, type: 3}

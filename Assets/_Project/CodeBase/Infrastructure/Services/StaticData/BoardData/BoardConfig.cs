@@ -1,7 +1,7 @@
-﻿using CodeBase.SceneCreation;
+﻿using CodeBase.BoardContent;
 using UnityEngine;
 
-namespace CodeBase.Infrastructure.Services.StaticData {
+namespace CodeBase.Infrastructure.Services.StaticData.BoardData {
   [CreateAssetMenu]
   public class BoardConfig : EntityStaticData {
     public BoardTile BoardTilePrefab;

@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 595b0474208146f8a91929e03b96a2be, type: 3}
-  m_Name: BoardConfig
+  m_Script: {fileID: 11500000, guid: ab4a725209d747e9b4c5d16b3b1914c0, type: 3}
+  m_Name: TowerContentStorage
   m_EditorClassIdentifier: 
-  BoardTilePrefab: {fileID: 3964268486969816335, guid: fe85932a9f20cfc4ea90b3b09c2bf940,
-    type: 3}
-  BoardSize: {x: 18, y: 15}

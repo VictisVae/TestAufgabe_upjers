@@ -4,7 +4,7 @@ using CodeBase.Units;
 using CodeBase.Utilities;
 using UnityEngine;
 
-namespace CodeBase.Infrastructure.Services.StaticData {
+namespace CodeBase.Infrastructure.Services.StaticData.UnitData {
   [CreateAssetMenu(fileName = nameof(UnitConfigStorage), menuName = "Static Data/Unit Config Storage")]
   public class UnitConfigStorage : EntityStaticData {
     private Dictionary<UnitType, UnitConfig> _unitConfigsMap;

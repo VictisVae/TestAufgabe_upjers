@@ -1,6 +1,6 @@
-﻿using CodeBase.Infrastructure.Gameplay;
+﻿using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services;
-using CodeBase.SceneCreation;
 using CodeBase.Units;
 
 namespace CodeBase.Infrastructure.Factory {
@@ -9,5 +9,6 @@ namespace CodeBase.Infrastructure.Factory {
     TileContent Create(TileContentType type);
     UnitBase Create(UnitType type);
     void Reclaim(FactoryObject unit);
+    Tower CreateTower(TowerType towerType);
   }
 }

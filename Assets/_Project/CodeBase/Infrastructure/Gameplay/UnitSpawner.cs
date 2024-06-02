@@ -1,6 +1,6 @@
-﻿using CodeBase.Infrastructure.Factory;
+﻿using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.Random;
-using CodeBase.SceneCreation;
 using CodeBase.Units;
 
 namespace CodeBase.Infrastructure.Gameplay {

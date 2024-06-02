@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 914d336b300b40549251fc29e8966b96, type: 3}
-  m_Name: Tower
+  m_Script: {fileID: 11500000, guid: 7f6c650f322c4e95936e76f3e3ebcb58, type: 3}
+  m_Name: LTower
   m_EditorClassIdentifier: 
-  Type: 4
-  Prefab: {fileID: 3207852529346731881, guid: 2b3273bdf6130504c881fbff7f669e36, type: 3}
+  ContentType: 4
+  BuildScheme:
+    _towerType: 3
+  Prefab: {fileID: 3207852529346731881, guid: f815d255a0c018f4d940165dff65502e, type: 3}

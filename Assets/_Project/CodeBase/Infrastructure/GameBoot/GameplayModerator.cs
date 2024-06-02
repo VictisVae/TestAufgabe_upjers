@@ -1,9 +1,11 @@
 ﻿using System.Collections;
+using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
+using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.StaticData;
-using CodeBase.SceneCreation;
+using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using UnityEngine;
 
 namespace CodeBase.Infrastructure.GameBoot {
@@ -47,9 +49,9 @@ namespace CodeBase.Infrastructure.GameBoot {
       }
 
       if (_input.MouseButtonDown(0)) {
-        HandleTouch();
+        HandleTowerPlacement();
       } else if (_input.MouseButtonDown(1)) {
-        HandleAlternativeTouch();
+        HandleGroundPlacement();
       }
 
       if (_scenarioInProgress) {
@@ -73,34 +75,6 @@ namespace CodeBase.Infrastructure.GameBoot {
     public void RunEvents() => _monoEventsProvider.OnApplicationUpdateEvent += Update;
     public void StopEvents() => _monoEventsProvider.OnApplicationUpdateEvent -= Update;
 
-    private void HandleTouch() {
-      BoardTile tile = _board.GetTile(TouchRay);
-
-      if (tile == null) {
-        return;
-      }
-
-      if (_input.Key(KeyCode.LeftShift)) {
-        _board.ToggleTower(tile, () => _unitSpawner.Collection.Targets);
-      } else {
-        _board.ToggleGround(tile);
-      }
-    }
-
-    private void HandleAlternativeTouch() {
-      BoardTile tile = _board.GetTile(TouchRay);
-
-      if (tile == null) {
-        return;
-      }
-
-      if (_input.Key(KeyCode.LeftShift)) {
-        _board.ToggleDestination(tile);
-      } else {
-        _board.ToggleSpawnPoint(tile);
-      }
-    }
-
     public void BeginNewGame() {
       _scenarioInProgress = false;
 
@@ -112,6 +86,58 @@ namespace CodeBase.Infrastructure.GameBoot {
       _board.Clear();
       _currentPlayerHealth = _startingPlayerHealth;
       _prepareRoutine = _coroutineHandler.StartCoroutine(PrepareRoutine());
+    }
+
+    private void HandleTowerPlacement() {
+      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+        return;
+      }
+
+      bool isPlacable = true;
+
+      TowerConfig towerConfig = GlobalService.Container.GetSingle<IStaticDataService>()
+        .GetStaticData<TowerContentStorage>()
+        .GetTowerConfig(TowerType.LTower);
+
+      Vector2Int[] scheme = towerConfig.BuildScheme.GetPlacementScheme();
+      BoardTile[] potentialOccupied = new BoardTile[scheme.Length];
+      for (int i = 0; i < scheme.Length; i++) {
+        BoardTile tile = _board.GetTile(hit.point.x + scheme[i].x, hit.point.z + scheme[i].y);
+        potentialOccupied[i] = tile;
+
+        if (tile == null || tile.Content.IsGround == false || tile.Content.IsOccupied) {
+          Debug.Log("can't be placed");
+          isPlacable = false;
+          break;
+        }
+      }
+      
+      if (_input.Key(KeyCode.RightShift)) {
+        _board.RemoveTower(potentialOccupied[0]);
+        return;
+      }
+
+      if (isPlacable == false) {
+        return;
+      }
+      
+      if (_input.Key(KeyCode.LeftShift)) {
+        _board.PlaceTower(potentialOccupied, TowerType.LTower, () => _unitSpawner.Collection.Targets);
+      } 
+    }
+
+    private void HandleGroundPlacement() {
+      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+        return;
+      }
+
+      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+
+      if (_input.Key(KeyCode.LeftShift)) {
+        _board.PlaceGround(tile);
+      } else {
+        _board.RemoveGround(tile);
+      }
     }
 
     private IEnumerator PrepareRoutine() {

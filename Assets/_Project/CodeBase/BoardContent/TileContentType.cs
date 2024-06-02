@@ -1,4 +1,4 @@
-﻿namespace CodeBase.SceneCreation {
+﻿namespace CodeBase.BoardContent {
   public enum TileContentType {
     Empty,
     Destination,

@@ -1,5 +1,6 @@
-﻿using CodeBase.Infrastructure.Services.StaticData;
-using CodeBase.SceneCreation;
+﻿using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Services.StaticData;
+using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using CodeBase.Utilities;
 using UnityEngine;
 using static CodeBase.Utilities.Constants;

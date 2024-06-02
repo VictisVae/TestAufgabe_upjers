@@ -1,6 +1,7 @@
-﻿using CodeBase.Infrastructure.Factory;
+﻿using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.StaticData;
-using CodeBase.SceneCreation;
+using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using UnityEngine;
 
 namespace CodeBase.Units {

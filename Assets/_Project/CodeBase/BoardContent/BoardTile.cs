@@ -3,7 +3,7 @@ using CodeBase.Utilities;
 using UnityEngine;
 using static CodeBase.Utilities.Constants.Math;
 
-namespace CodeBase.SceneCreation {
+namespace CodeBase.BoardContent {
   public class BoardTile : MonoBehaviour {
     public static void MakeEastWestNeighbour(BoardTile east, BoardTile west) {
       west._east = east;
@@ -15,6 +15,7 @@ namespace CodeBase.SceneCreation {
       south._north = north;
     }
 
+    private static Vector3 GetQuadSide(BoardTile neighbor, Direction direction) => neighbor.transform.localPosition + direction.GetHalfVector();
     private readonly Quaternion _northRotation = Quaternion.Euler(QuarterTurn, 0, 0);
     private readonly Quaternion _eastRotation = Quaternion.Euler(QuarterTurn, QuarterTurn, 0);
     private readonly Quaternion _southRotation = Quaternion.Euler(QuarterTurn, HalfTurn, 0);
@@ -22,8 +23,9 @@ namespace CodeBase.SceneCreation {
     [SerializeField]
     private Transform _arrow;
     private BoardTile _north, _east, _south, _west;
-    private int _distance;
     private TileContent _content;
+    private Conjunction _conjunction;
+    private int _distance;
 
     public void ClearPath() {
       _distance = int.MaxValue;
@@ -54,6 +56,10 @@ namespace CodeBase.SceneCreation {
         NextTileOnOnPath == _south ? _southRotation : _westRotation;
     }
 
+    public void MakeConjunction(BoardTile[] occupied) => _conjunction = new Conjunction(occupied);
+    public BoardTile[] GetOccupied() => _conjunction?.Occupied;
+    public void ClearOccupation() => _conjunction = null;
+
     private BoardTile GrowPathTo(BoardTile neighbor, Direction direction) {
       if (HasPath == false || neighbor == null || neighbor.HasPath) {
         return null;
@@ -66,7 +72,6 @@ namespace CodeBase.SceneCreation {
       return neighbor.Content.IsBlockingPath ? null : neighbor;
     }
 
-    private static Vector3 GetQuadSide(BoardTile neighbor, Direction direction) => neighbor.transform.localPosition + direction.GetHalfVector();
     public TileContent Content {
       get => _content;
       set {
@@ -83,5 +88,11 @@ namespace CodeBase.SceneCreation {
     public bool HasPath => _distance != int.MaxValue;
     public Vector3 ExitPoint { get; private set; }
     public bool IsAlternative { get; set; }
+
+    private class Conjunction {
+      private readonly BoardTile[] _occupied;
+      public Conjunction(BoardTile[] occupied) => _occupied = occupied;
+      public BoardTile[] Occupied => _occupied;
+    }
   }
 }

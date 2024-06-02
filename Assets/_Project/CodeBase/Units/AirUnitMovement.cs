@@ -1,4 +1,5 @@
 ﻿using CodeBase.Infrastructure.Services.StaticData;
+using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using UnityEngine;
 
 namespace CodeBase.Units {

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CodeBase.SceneCreation;
+using CodeBase.BoardContent;
 using CodeBase.Utilities;
 using UnityEngine;
 
-namespace CodeBase.Infrastructure.Services.StaticData {
+namespace CodeBase.Infrastructure.Services.StaticData.TileContentData {
   [CreateAssetMenu(fileName = nameof(TileContentStorage), menuName = "Static Data/Tile Content Storage")]
   public class TileContentStorage : EntityStaticData {
     private Dictionary<TileContentType, TileContentConfig> _tileContentMap;

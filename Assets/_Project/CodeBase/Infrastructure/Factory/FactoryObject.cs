@@ -1,8 +1,5 @@
-﻿using CodeBase.Utilities;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CodeBase.Infrastructure.Factory {
-  public abstract class FactoryObject : MonoBehaviour {
-    public void Get() => gameObject.Enable();
-  }
+  public abstract class FactoryObject : MonoBehaviour {}
 }

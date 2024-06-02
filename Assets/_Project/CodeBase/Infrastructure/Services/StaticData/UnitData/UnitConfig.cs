@@ -1,9 +1,8 @@
 ﻿using CodeBase.Data;
-using CodeBase.SceneCreation;
 using CodeBase.Units;
 using UnityEngine;
 
-namespace CodeBase.Infrastructure.Services.StaticData {
+namespace CodeBase.Infrastructure.Services.StaticData.UnitData {
   [CreateAssetMenu]
   public class UnitConfig : ScriptableObject {
     public UnitType Type;

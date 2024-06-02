@@ -11,6 +11,7 @@
       public const string StaticData = nameof(StaticData);
       public const string UnitConfigs = nameof(UnitConfigs);
       public const string TileContentConfigs = nameof(TileContentConfigs);
+      public const string TowerConfigs = nameof(TowerConfigs);
     }
 
     public static class Boot {

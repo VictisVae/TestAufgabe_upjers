@@ -15,10 +15,10 @@ MonoBehaviour:
   _spawnSequences:
   - _type: 2
     _amount: 5
-    _cooldown: 0.5
+    _cooldown: 3
   - _type: 1
     _amount: 3
-    _cooldown: 1
+    _cooldown: 5
   - _type: 0
     _amount: 2
-    _cooldown: 3
+    _cooldown: 9
