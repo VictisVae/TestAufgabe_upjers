@@ -1,5 +1,4 @@
 ﻿using CodeBase.BoardContent;
-using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using CodeBase.Utilities;
 using UnityEngine;
@@ -12,9 +11,9 @@ namespace CodeBase.Units {
     protected readonly float _speed;
     private readonly Transform _modelTransform;
     private readonly float _pathOffset;
-    protected BoardTile _tileFrom, _tileTo;
     protected Vector3 _positionFrom, _positionTo;
     protected float _progressFactor;
+    protected BoardTile _tileFrom, _tileTo;
     private Direction _direction;
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
@@ -51,6 +50,7 @@ namespace CodeBase.Units {
 
       if (_tileTo == null) {
         PrepareOutro();
+        return;
       }
 
       _positionTo = _tileFrom.ExitPoint;

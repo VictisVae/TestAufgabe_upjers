@@ -1,5 +1,5 @@
-﻿using CodeBase.Infrastructure.Services.StaticData;
-using CodeBase.Infrastructure.Services.StaticData.UnitData;
+﻿using CodeBase.Infrastructure.Services.StaticData.UnitData;
+using CodeBase.Utilities;
 using UnityEngine;
 
 namespace CodeBase.Units {
@@ -13,6 +13,6 @@ namespace CodeBase.Units {
       _progressFactor = 0.1f * _speed;
     }
 
-    protected override void PrepareOutro() => _progressFactor = 2.0f * _speed;
+    protected override void PrepareOutro() => _progressFactor = Constants.ProgressFactorInitial * _speed;
   }
 }

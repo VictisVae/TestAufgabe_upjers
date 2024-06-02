@@ -18,8 +18,9 @@ namespace CodeBase.BoardContent {
     private readonly Camera _camera;
     private readonly GameBoard _board;
     private TileContent _flyingTileContent;
+    private TowerType _currentTowerType = TowerType.Simple;
     private Func<bool> _placementAvailable;
-    private Action _placementOnClick = delegate {  };
+    private Action _placementOnClick = delegate {};
     private bool _flyingBuildingAllowed;
 
     public TileContentBuilder
@@ -34,47 +35,21 @@ namespace CodeBase.BoardContent {
       _board = board;
     }
 
-    public void RunEvents() => _monoEventsProvider.OnApplicationUpdateEvent += Update;
-    public void StopEvents() => _monoEventsProvider.OnApplicationUpdateEvent -= Update;
-    public void AllowFlyingBuilding() => _flyingBuildingAllowed = true;
-    private void RestrictFlyingBuilding() => _flyingBuildingAllowed = false;
-
-    public void StartPlacingContent(TileContentType type) {
-      if (_flyingTileContent != null) {
-        Object.Destroy(_flyingTileContent.gameObject);
-      }
-
-      _flyingTileContent = _gameFactory.Create(type);
-      _placementAvailable = IsGroundPlacementPossible;
-      _placementOnClick = PlaceGround;
-    }
-    
-    public void StartPlacingContent(TowerType towerType) {
-      if (_flyingTileContent != null) {
-        Object.Destroy(_flyingTileContent.gameObject);
-      }
-
-      _flyingTileContent = _gameFactory.CreateTower(towerType);
-      _placementAvailable = IsTowerPlacementPossible;
-      _placementOnClick = PlaceTower;
-    }
-
     private void Update() {
       if (_flyingBuildingAllowed == false) {
         return;
       }
 
-      var ground = new Plane(Vector3.up, Vector3.zero);
-      var ray = TouchRay;
+      Plane ground = new Plane(Vector3.up, Vector3.zero);
+      Ray ray = TouchRay;
 
       if (ground.Raycast(ray, out float position)) {
         Vector3 worldPosition = ray.GetPoint(position);
         worldPosition.y += 0.1f;
         _flyingTileContent.transform.position = worldPosition;
       }
-      
-      bool isAvailable = _placementAvailable.Invoke();
 
+      bool isAvailable = _placementAvailable.Invoke();
       _flyingTileContent.ViewAvailable(isAvailable);
 
       if (isAvailable && _input.MouseButtonDown(0)) {
@@ -86,12 +61,72 @@ namespace CodeBase.BoardContent {
       }
     }
 
+    public void RunEvents() => _monoEventsProvider.OnApplicationUpdateEvent += Update;
+    public void StopEvents() => _monoEventsProvider.OnApplicationUpdateEvent -= Update;
+    public void AllowFlyingBuilding() => _flyingBuildingAllowed = true;
+
+    public void StartPlacingContent(TileContentType type) {
+      if (_flyingTileContent != null) {
+        Object.Destroy(_flyingTileContent.gameObject);
+      }
+
+      _flyingTileContent = _gameFactory.Create(type);
+      _placementAvailable = IsTilePlacementPossible;
+      _placementOnClick = PlacementOnClick(type);
+    }
+
+    public void StartPlacingContent(TowerType towerType) {
+      if (_flyingTileContent != null) {
+        Object.Destroy(_flyingTileContent.gameObject);
+      }
+
+      _currentTowerType = towerType;
+      _flyingTileContent = _gameFactory.CreateTower(towerType);
+      _placementAvailable = IsTowerPlacementPossible;
+      _placementOnClick = PlaceTower;
+    }
+
+    public void RemoveTower() {
+      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+        return;
+      }
+
+      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      _board.RemoveTower(tile);
+    }
+
+    public void RemoveGround() {
+      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+        return;
+      }
+
+      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      _board.RemoveGround(tile);
+    }
+
+    private void RestrictFlyingBuilding() => _flyingBuildingAllowed = false;
+
+    private Action PlacementOnClick(TileContentType type) {
+      switch (type) {
+        case TileContentType.Destination:
+          return PlaceDestination;
+        case TileContentType.Ground:
+          return PlaceGround;
+        case TileContentType.SpawnPoint:
+          return PlaceSpawnPoint;
+        case TileContentType.Empty:
+        case TileContentType.Tower:
+        default:
+          return PlaceEmpty;
+      }
+    }
+
     private bool IsTowerPlacementPossible() {
       if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
         return false;
       }
 
-      TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(TowerType.LTower);
+      TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(_currentTowerType);
       Vector2Int[] scheme = towerConfig.BuildScheme.GetPlacementScheme();
       BoardTile[] potentialOccupied = new BoardTile[scheme.Length];
 
@@ -106,10 +141,10 @@ namespace CodeBase.BoardContent {
 
       return true;
     }
-    
+
     private void PlaceTower() {
       Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
-      TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(TowerType.LTower);
+      TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(_currentTowerType);
       Vector2Int[] scheme = towerConfig.BuildScheme.GetPlacementScheme();
       BoardTile[] potentialOccupied = new BoardTile[scheme.Length];
 
@@ -118,19 +153,10 @@ namespace CodeBase.BoardContent {
         potentialOccupied[i] = tile;
       }
 
-      _board.PlaceTower(potentialOccupied, TowerType.LTower, () => _unitSpawner.Collection.Targets);
+      _board.PlaceTower(potentialOccupied, _currentTowerType, () => _unitSpawner.Collection.Targets);
     }
 
-    public void RemoveTower() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
-        return;
-      }
-
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      _board.RemoveTower(tile);
-    }
-
-    private bool IsGroundPlacementPossible() {
+    private bool IsTilePlacementPossible() {
       if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
         return false;
       }
@@ -139,19 +165,28 @@ namespace CodeBase.BoardContent {
       return tile.Content.IsEmpty;
     }
 
+    private void PlaceSpawnPoint() {
+      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
+      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      _board.PlaceSpawnPoint(tile);
+    }
+
+    private void PlaceDestination() {
+      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
+      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      _board.PlaceDestination(tile);
+    }
+
     private void PlaceGround() {
       Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
       BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
       _board.PlaceGround(tile);
     }
 
-    public void RemoveGround() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
-        return;
-      }
-
+    private void PlaceEmpty() {
+      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
       BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      _board.RemoveGround(tile);
+      _board.PlaceEmpty(tile);
     }
 
     private Ray TouchRay => _camera.ScreenPointToRay(_input.MousePosition);

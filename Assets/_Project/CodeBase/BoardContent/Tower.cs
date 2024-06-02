@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CodeBase.Infrastructure.Factory;
 using CodeBase.TowerBehaviour;
 using CodeBase.Utilities;
 using UnityEngine;
@@ -82,7 +81,7 @@ namespace CodeBase.BoardContent {
 
     private void OnDrawGizmos() {
       Gizmos.color = Color.yellow;
-      Vector3 position = transform.localPosition;
+      Vector3 position = _turret.position;
       position.y += 0.01f;
       Gizmos.DrawWireSphere(position, _targetingRange);
 

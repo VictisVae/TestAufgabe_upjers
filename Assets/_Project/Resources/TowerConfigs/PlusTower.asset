@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f6c650f322c4e95936e76f3e3ebcb58, type: 3}
-  m_Name: LTower
+  m_Name: PlusTower
   m_EditorClassIdentifier: 
   ContentType: 4
   BuildScheme:
-    _towerType: 3
-  Prefab: {fileID: 3207852529346731881, guid: ef46747390faa194ab83cb2714fdbda4, type: 3}
+    _towerType: 5
+  Prefab: {fileID: 3207852529346731881, guid: 5116a38bec28c8c4cbb75c47b334fe0b, type: 3}

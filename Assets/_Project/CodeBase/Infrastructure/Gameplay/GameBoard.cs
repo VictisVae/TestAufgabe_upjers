@@ -48,10 +48,6 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void PlaceDestination(BoardTile tile) {
-      if (tile.Content.IsEmpty == false || tile.Content.IsDestination) {
-        return;
-      }
-
       SetTileDestination(tile);
       FindPathsSuccessful();
 
@@ -124,13 +120,11 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void PlaceSpawnPoint(BoardTile tile) {
-      if (tile.Content.IsEmpty == false) {
-        return;
-      }
-
       SetTileSpawnPoint(tile);
       _spawnPoints.Add(tile);
     }
+
+    public void PlaceEmpty(BoardTile tile) => SetTileEmpty(tile);
 
     public void RemoveSpawnPoint(BoardTile tile) {
       if (tile.Content.IsSpawnPoint == false || _spawnPoints.Count <= 1) {
