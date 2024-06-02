@@ -71,11 +71,13 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void PlaceGround(BoardTile tile) {
-      if (tile.Content.IsEmpty == false) {
+      SetTileGround(tile);
+
+      if (FindPathsSuccessful()) {
         return;
       }
 
-      SetTileGround(tile);
+      SetTileEmpty(tile);
       FindPathsSuccessful();
     }
 
@@ -96,13 +98,14 @@ namespace CodeBase.Infrastructure.Gameplay {
       }
 
       Tower tower = GetTower(type).With(x => x.ReceiveTargets(targets));
-      placementTile.Content = tower;
+      placementTile.Content.SetOccupiedBy(tower);
+      tower.transform.position = placementTile.transform.position;
 
       foreach (var occupiedTile in tiles) {
         occupiedTile.Content.SetOccupiedBy(tower);
       }
 
-      _contentToUpdate.Add(placementTile.Content);
+      _contentToUpdate.Add(tower);
     }
 
     public void RemoveTower(BoardTile tile) {
@@ -138,11 +141,12 @@ namespace CodeBase.Infrastructure.Gameplay {
       SetTileEmpty(tile);
     }
 
-    public BoardTile GetTile(float posX, float posZ) {
-      int x = (int)(posX + _boardSize.x * Half);
-      int y = (int)(posZ + _boardSize.y * Half);
-      bool checkBoarders = x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
-      return checkBoarders ? CastIntersectionInIndex(x, y) : null;
+    public BoardTile GetTile(float posX, float posZ) => IsInBorders(posX, posZ, out int x, out int y) ? CastIntersectionIndex(x, y) : null;
+
+    public bool IsInBorders(float posX, float posZ, out int x, out int y) {
+      x = (int)(posX + _boardSize.x * Half);
+      y = (int)(posZ + _boardSize.y * Half);
+      return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
     }
 
     public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
@@ -165,7 +169,7 @@ namespace CodeBase.Infrastructure.Gameplay {
     private void SetTileGround(BoardTile tile) => tile.Content = _factory.Create(TileContentType.Ground);
     private Tower GetTower(TowerType type) => _factory.CreateTower(type);
 
-    private void FindPathsSuccessful() {
+    private bool FindPathsSuccessful() {
       foreach (BoardTile tile in _tiles) {
         if (tile.Content.IsDestination) {
           tile.NullifyDestination();
@@ -176,23 +180,25 @@ namespace CodeBase.Infrastructure.Gameplay {
       }
 
       if (_searchFrontier.Count == 0) {
-        return;
+        return false;
       }
 
       FrontierSearching();
 
       foreach (BoardTile tile in _tiles) {
         if (tile.HasPath == false) {
-          return;
+          return false;
         }
       }
 
       foreach (BoardTile tile in _tiles) {
         tile.ShowPath();
       }
+
+      return true;
     }
 
-    private BoardTile CastIntersectionInIndex(int x, int y) => _tiles[x + y * _boardSize.x];
+    private BoardTile CastIntersectionIndex(int x, int y) => _tiles[x + y * _boardSize.x];
 
     private BoardTile CreateTile(int i, int x, Vector2 offset, int y) {
       BoardTile tile = _tiles[i] = Instantiate(_staticDataService.GetStaticData<BoardConfig>().BoardTilePrefab, transform, false);

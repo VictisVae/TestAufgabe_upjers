@@ -1,4 +1,5 @@
-﻿using CodeBase.Infrastructure.Factory;
+﻿using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.GameBoot;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services.Input;
@@ -34,7 +35,9 @@ namespace CodeBase.Infrastructure.States {
     public void Exit() => _moderator?.StopEvents();
 
     private void OnLoaded() {
+      var hud = _gameFactory.CreateHUD();
       GameBoard gameBoard = CreateGameBoard();
+      hud.Construct(new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard));
       _moderator = CreateGameplayModerator(gameBoard);
       _spawner.Construct(gameBoard);
       gameBoard.Initialize(_staticDataService, _gameFactory);
@@ -44,7 +47,6 @@ namespace CodeBase.Infrastructure.States {
 
     private GameBoard CreateGameBoard() => _gameFactory.CreateGameBoard();
 
-    private GameplayModerator CreateGameplayModerator
-      (GameBoard gameBoard) => new GameplayModerator(_spawner, _input, _monoEventsProvider, _coroutineHandler, _staticDataService, gameBoard);
+    private GameplayModerator CreateGameplayModerator(GameBoard gameBoard) => new GameplayModerator(_spawner, _input, _monoEventsProvider, _coroutineHandler, _staticDataService, gameBoard);
   }
 }

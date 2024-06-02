@@ -1,6 +1,8 @@
 ﻿using System;
 using CodeBase.Units;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using static CodeBase.Utilities.Constants.Math;
 
 namespace CodeBase.Utilities {
@@ -20,6 +22,11 @@ namespace CodeBase.Utilities {
 
       return self;
     }
+  }
+
+  public static class UIExtensions {
+    public static void AddListener(this Button self, UnityAction action) => self.onClick.AddListener(action);
+    public static void RemoveListener(this Button self, UnityAction action) => self.onClick.RemoveListener(action);
   }
 
   public static class DirectionExtensions {

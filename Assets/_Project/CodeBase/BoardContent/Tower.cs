@@ -19,7 +19,7 @@ namespace CodeBase.BoardContent {
     private TargetPoint _target;
     private Vector3 _laserBeamScale;
     private void Awake() => _laserBeamScale = _laserBeams[0].localScale;
-
+    
     public override void GameUpdate() {
       if (IsTargetTracked() || IsTargetAcquired()) {
         Shoot();

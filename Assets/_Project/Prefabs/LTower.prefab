@@ -1053,7 +1053,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e3b28acb504c92888c11ac0140a4b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _meshRenderer: {fileID: 1599287302408674961}
   _type: 4
+  Size: {x: 2, y: 3}
   _targetingRange: 3
   _turret: {fileID: 1487329154316636509}
   _laserBeams:

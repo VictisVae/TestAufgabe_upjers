@@ -427,6 +427,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2817306300662067207}
   - component: {fileID: 3207852529346731881}
+  - component: {fileID: 3822863690732138223}
   m_Layer: 0
   m_Name: SimpleTower
   m_TagString: Untagged
@@ -464,12 +465,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e3b28acb504c92888c11ac0140a4b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _meshRenderer: {fileID: 1599287302408674961}
   _type: 4
+  Size: {x: 1, y: 1}
   _targetingRange: 3
   _turret: {fileID: 1487329154316636509}
   _laserBeams:
   - {fileID: 4936284535666161969}
   - {fileID: 5056919462596519265}
+--- !u!114 &3822863690732138223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4544109579088391525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4299f23437604b79b38c9cad886cee73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5508751750891469702
 GameObject:
   m_ObjectHideFlags: 0

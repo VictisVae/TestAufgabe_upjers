@@ -1,16 +1,12 @@
 ﻿using System.Collections;
-using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
-using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.StaticData;
-using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using UnityEngine;
 
 namespace CodeBase.Infrastructure.GameBoot {
   public class GameplayModerator {
-    private readonly Camera _camera;
     private readonly IInputService _input;
     private readonly IMonoEventsProvider _monoEventsProvider;
     private readonly ICoroutineHandler _coroutineHandler;
@@ -29,7 +25,6 @@ namespace CodeBase.Infrastructure.GameBoot {
     public GameplayModerator
       (IUnitSpawner unitSpawner, IInputService input, IMonoEventsProvider monoEventsProvider, ICoroutineHandler coroutineHandler,
         IStaticDataService staticDataService, GameBoard board) {
-      _camera = Camera.main;
       _unitSpawner = unitSpawner;
       _board = board;
       _input = input;
@@ -47,13 +42,7 @@ namespace CodeBase.Infrastructure.GameBoot {
       if (_input.KeyDown(KeyCode.R)) {
         BeginNewGame();
       }
-
-      if (_input.MouseButtonDown(0)) {
-        HandleTowerPlacement();
-      } else if (_input.MouseButtonDown(1)) {
-        HandleGroundPlacement();
-      }
-
+      
       if (_scenarioInProgress) {
         if (_currentPlayerHealth <= 0) {
           Debug.Log("Defeated");
@@ -88,64 +77,10 @@ namespace CodeBase.Infrastructure.GameBoot {
       _prepareRoutine = _coroutineHandler.StartCoroutine(PrepareRoutine());
     }
 
-    private void HandleTowerPlacement() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
-        return;
-      }
-
-      bool isPlacable = true;
-
-      TowerConfig towerConfig = GlobalService.Container.GetSingle<IStaticDataService>()
-        .GetStaticData<TowerContentStorage>()
-        .GetTowerConfig(TowerType.LTower);
-
-      Vector2Int[] scheme = towerConfig.BuildScheme.GetPlacementScheme();
-      BoardTile[] potentialOccupied = new BoardTile[scheme.Length];
-      for (int i = 0; i < scheme.Length; i++) {
-        BoardTile tile = _board.GetTile(hit.point.x + scheme[i].x, hit.point.z + scheme[i].y);
-        potentialOccupied[i] = tile;
-
-        if (tile == null || tile.Content.IsGround == false || tile.Content.IsOccupied) {
-          Debug.Log("can't be placed");
-          isPlacable = false;
-          break;
-        }
-      }
-      
-      if (_input.Key(KeyCode.RightShift)) {
-        _board.RemoveTower(potentialOccupied[0]);
-        return;
-      }
-
-      if (isPlacable == false) {
-        return;
-      }
-      
-      if (_input.Key(KeyCode.LeftShift)) {
-        _board.PlaceTower(potentialOccupied, TowerType.LTower, () => _unitSpawner.Collection.Targets);
-      } 
-    }
-
-    private void HandleGroundPlacement() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
-        return;
-      }
-
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-
-      if (_input.Key(KeyCode.LeftShift)) {
-        _board.PlaceGround(tile);
-      } else {
-        _board.RemoveGround(tile);
-      }
-    }
-
     private IEnumerator PrepareRoutine() {
       yield return new WaitForSeconds(_preparationTime);
       _activeScenario = _scenario.Begin();
       _scenarioInProgress = true;
     }
-
-    private Ray TouchRay => _camera.ScreenPointToRay(_input.MousePosition);
   }
 }

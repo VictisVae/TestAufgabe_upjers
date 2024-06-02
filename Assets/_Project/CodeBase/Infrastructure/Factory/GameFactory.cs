@@ -5,6 +5,7 @@ using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.TileContentData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
+using CodeBase.UI;
 using CodeBase.Units;
 using CodeBase.Utilities;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace CodeBase.Infrastructure.Factory {
     }
 
     public GameBoard CreateGameBoard() => _asset.Initialize<GameBoard>(Constants.AssetsPath.GameBoard);
+    public HUD CreateHUD() => _asset.Initialize<HUD>(Constants.AssetsPath.HUD);
 
     public Tower CreateTower(TowerType towerType) {
       Tower instance = CreateGameObjectInstance(_staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(towerType).Prefab);
