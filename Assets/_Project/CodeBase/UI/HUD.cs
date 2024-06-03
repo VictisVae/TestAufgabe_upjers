@@ -1,4 +1,5 @@
 ﻿using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Utilities;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,7 +10,11 @@ namespace CodeBase.UI {
     private TileBuildingButtonData[] _tileBuildingButtons;
     [SerializeField]
     private TowerBuildingButtonData[] _towerBuildingButtons;
+    [SerializeField]
+    private WaveRunnerButton _waveRunner; 
+    
     private TileContentBuilder _tileContentBuilder;
+    private Player _player;
 
     protected override void Start() {
       foreach (TileBuildingButtonData tileBuildingButton in _tileBuildingButtons) {
@@ -20,6 +25,7 @@ namespace CodeBase.UI {
         towerBuildingButton.Button.AddListener(() => BuildTower(towerBuildingButton.Type));
       }
 
+      _waveRunner.SubscribeAction(RunFirstWave);
       _tileContentBuilder.RunEvents();
     }
 
@@ -32,10 +38,19 @@ namespace CodeBase.UI {
         towerBuildingButton.Button.RemoveAllListeners();
       }
 
+      _waveRunner.UnsubscribeAction(RunFirstWave);
       _tileContentBuilder.StopEvents();
     }
 
-    public void Construct(TileContentBuilder contentBuilder) => _tileContentBuilder = contentBuilder;
+    public void Construct(TileContentBuilder contentBuilder, Player player) {
+      _player = player;
+      _tileContentBuilder = contentBuilder;
+    }
+
+    private void RunFirstWave() {
+      _player.BeginNewGame();
+      _waveRunner.SetDisabled();
+    }
 
     private void BuildTile(TileContentType tileContentType) {
       _tileContentBuilder.AllowFlyingBuilding();

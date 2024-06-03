@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoardTilePrefab: {fileID: 3964268486969816335, guid: fe85932a9f20cfc4ea90b3b09c2bf940,
     type: 3}
-  BoardSize: {x: 18, y: 15}
+  BoardSize: {x: 17, y: 17}

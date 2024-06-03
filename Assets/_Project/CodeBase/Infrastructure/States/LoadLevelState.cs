@@ -5,6 +5,7 @@ using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.StaticData;
+using CodeBase.UI;
 
 namespace CodeBase.Infrastructure.States {
   public class LoadLevelState : IPayloadState<string> {
@@ -14,8 +15,7 @@ namespace CodeBase.Infrastructure.States {
     private readonly SceneLoader _sceneLoader;
     private readonly IStaticDataService _staticDataService;
     private readonly IUnitSpawner _spawner;
-    private readonly ICoroutineHandler _coroutineHandler;
-    private GameplayModerator _moderator;
+    private Player _player;
 
     public LoadLevelState
       (IInputService input, IMonoEventsProvider monoEventsProvider, IGameFactory gameFactory, IStaticDataService staticDataService,
@@ -26,27 +26,26 @@ namespace CodeBase.Infrastructure.States {
       _gameFactory = gameFactory;
       _staticDataService = staticDataService;
       _spawner = spawner;
-      _coroutineHandler = sceneLoader.CoroutineHandler;
     }
 
     public void Enter(string sceneName) =>
       _sceneLoader.Load(sceneName, OnLoaded);
 
-    public void Exit() => _moderator?.StopEvents();
+    public void Exit() => _player?.StopEvents();
 
     private void OnLoaded() {
       var hud = _gameFactory.CreateHUD();
       GameBoard gameBoard = CreateGameBoard();
-      hud.Construct(new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard));
-      _moderator = CreateGameplayModerator(gameBoard);
+      _player = CreatePlayer(gameBoard, hud);
+      TileContentBuilder tileContentBuilder = new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard);
+      hud.Construct(tileContentBuilder, _player);
       _spawner.Construct(gameBoard);
       gameBoard.Initialize(_staticDataService, _gameFactory);
-      _moderator.RunEvents();
-      _moderator.BeginNewGame();
+      _player.RunEvents();
     }
 
     private GameBoard CreateGameBoard() => _gameFactory.CreateGameBoard();
 
-    private GameplayModerator CreateGameplayModerator(GameBoard gameBoard) => new GameplayModerator(_spawner, _input, _monoEventsProvider, _coroutineHandler, _staticDataService, gameBoard);
+    private Player CreatePlayer(GameBoard gameBoard, HUD hud) => new Player(_spawner, _monoEventsProvider, _staticDataService, gameBoard, hud);
   }
 }
