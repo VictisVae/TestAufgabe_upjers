@@ -56,8 +56,6 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void BeginNewGame() {
-      _unitSpawner.Collection.Clear();
-      _board.Clear();
       _activeScenario = _scenario.Begin();
       RunEvents();
     }

@@ -45,17 +45,16 @@ namespace CodeBase.BoardContent {
 
     public void ShowPath() {
       if (_distance == 0) {
-        _arrow.gameObject.Disable();
         return;
       }
-
-      _arrow.gameObject.Enable();
 
       _arrow.localRotation = NextTileOnOnPath == _north ? _northRotation :
         NextTileOnOnPath == _east ? _eastRotation :
         NextTileOnOnPath == _south ? _southRotation : _westRotation;
     }
 
+    public void ToggleArrowOn() => _arrow.gameObject.Enable();
+    public void ToggleArrowOff() => _arrow.gameObject.Disable();
     public void MakeConjunction(BoardTile[] occupied) => _conjunction = new Conjunction(occupied);
     public BoardTile[] GetOccupied() => _conjunction?.Occupied;
     public void ClearOccupation() => _conjunction = null;

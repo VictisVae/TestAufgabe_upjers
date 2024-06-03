@@ -8,11 +8,10 @@ namespace CodeBase.BoardContent {
     private MeshRenderer _meshRenderer;
     [SerializeField]
     private TileContentType _type;
-    public Vector2Int Size;
     private IGameFactory _gameFactory;
     private Tower _occupationTower;
 
-    public void ViewAvailable(bool isAvailable) {
+    public virtual void ViewAvailable(bool isAvailable) {
       if (_type == TileContentType.Empty) {
         return;
       }
@@ -20,7 +19,7 @@ namespace CodeBase.BoardContent {
       _meshRenderer.material.color = isAvailable ? Color.green : Color.red;
     }
 
-    public void SetNormal() {
+    public virtual void SetNormal() {
       if (_type == TileContentType.Empty) {
         return;
       }
@@ -39,14 +38,5 @@ namespace CodeBase.BoardContent {
     public bool IsEmpty => _type == TileContentType.Empty;
     public bool IsOccupied => _occupationTower is not null;
     public bool IsBlockingPath => _type is TileContentType.Ground or TileContentType.Tower;
-
-    private void OnDrawGizmosSelected() {
-      for (int x = 0; x < Size.x; x++) {
-        for (int y = 0; y < Size.y; y++) {
-          Gizmos.color = Color.green;
-          Gizmos.DrawCube(transform.position + new Vector3(x, 0, y), new Vector3(1,0.01f,1));
-        }
-      }
-    }
   }
 }

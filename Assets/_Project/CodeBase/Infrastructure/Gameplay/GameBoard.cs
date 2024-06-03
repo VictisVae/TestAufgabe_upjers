@@ -157,10 +157,26 @@ namespace CodeBase.Infrastructure.Gameplay {
       PlaceSpawnPoint(_tiles[0]);
     }
 
-    private void SetTileEmpty(BoardTile tile) => tile.Content = _factory.Create(TileContentType.Empty);
-    private void SetTileSpawnPoint(BoardTile tile) => tile.Content = _factory.Create(TileContentType.SpawnPoint);
-    private void SetTileDestination(BoardTile tile) => tile.Content = _factory.Create(TileContentType.Destination);
-    private void SetTileGround(BoardTile tile) => tile.Content = _factory.Create(TileContentType.Ground);
+    private void SetTileEmpty(BoardTile tile) {
+      tile.Content = _factory.Create(TileContentType.Empty);
+      tile.ToggleArrowOn();
+    }
+
+    private void SetTileSpawnPoint(BoardTile tile) {
+      tile.Content = _factory.Create(TileContentType.SpawnPoint);
+      tile.ToggleArrowOff();
+    }
+
+    private void SetTileDestination(BoardTile tile) {
+      tile.Content = _factory.Create(TileContentType.Destination);
+      tile.ToggleArrowOff();
+    }
+
+    private void SetTileGround(BoardTile tile) {
+      tile.Content = _factory.Create(TileContentType.Ground);
+      tile.ToggleArrowOff();
+    }
+
     private Tower GetTower(TowerType type) => _factory.CreateTower(type);
 
     private bool FindPathsSuccessful() {
