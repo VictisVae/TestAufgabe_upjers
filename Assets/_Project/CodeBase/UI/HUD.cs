@@ -2,6 +2,7 @@
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Utilities;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace CodeBase.UI {
@@ -38,7 +39,7 @@ namespace CodeBase.UI {
         towerBuildingButton.Button.RemoveAllListeners();
       }
 
-      _waveRunner.UnsubscribeAction(RunFirstWave);
+      _waveRunner.UnsubscribeAll();
       _tileContentBuilder.StopEvents();
     }
 
@@ -47,10 +48,7 @@ namespace CodeBase.UI {
       _tileContentBuilder = contentBuilder;
     }
 
-    private void RunFirstWave() {
-      _player.BeginNewGame();
-      _waveRunner.SetDisabled();
-    }
+    private void RunFirstWave() => _player.BeginNewGame();
 
     private void BuildTile(TileContentType tileContentType) {
       _tileContentBuilder.AllowFlyingBuilding();
@@ -60,6 +58,13 @@ namespace CodeBase.UI {
     private void BuildTower(TowerType towerType) {
       _tileContentBuilder.AllowFlyingBuilding();
       _tileContentBuilder.StartPlacingContent(towerType);
+    }
+
+    public void SetNextWaveReady(UnityAction runNextWave) {
+      _waveRunner.UnsubscribeAction(RunFirstWave);
+      _waveRunner.UnsubscribeAction(runNextWave);
+      _waveRunner.SetEnabled();
+      _waveRunner.SubscribeAction(runNextWave);
     }
   }
 }

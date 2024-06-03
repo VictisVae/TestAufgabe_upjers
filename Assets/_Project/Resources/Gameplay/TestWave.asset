@@ -10,15 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e967ecd1e894534bcc7da61f2d1b020, type: 3}
-  m_Name: 2ndWave
+  m_Name: TestWave
   m_EditorClassIdentifier: 
   _spawnSequences:
   - _type: 2
-    _amount: 8
-    _cooldown: 2
-  - _type: 1
-    _amount: 4
-    _cooldown: 4
-  - _type: 2
-    _amount: 12
-    _cooldown: 2
+    _amount: 1
+    _cooldown: 1

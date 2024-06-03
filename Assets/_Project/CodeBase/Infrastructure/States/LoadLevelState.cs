@@ -15,7 +15,6 @@ namespace CodeBase.Infrastructure.States {
     private readonly SceneLoader _sceneLoader;
     private readonly IStaticDataService _staticDataService;
     private readonly IUnitSpawner _spawner;
-    private Player _player;
 
     public LoadLevelState
       (IInputService input, IMonoEventsProvider monoEventsProvider, IGameFactory gameFactory, IStaticDataService staticDataService,
@@ -31,21 +30,22 @@ namespace CodeBase.Infrastructure.States {
     public void Enter(string sceneName) =>
       _sceneLoader.Load(sceneName, OnLoaded);
 
-    public void Exit() => _player?.StopEvents();
+    public void Exit() {}
 
     private void OnLoaded() {
-      var hud = _gameFactory.CreateHUD();
+      HUD hud = _gameFactory.CreateHUD();
       GameBoard gameBoard = CreateGameBoard();
-      _player = CreatePlayer(gameBoard, hud);
-      TileContentBuilder tileContentBuilder = new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard);
-      hud.Construct(tileContentBuilder, _player);
+      Player player = CreatePlayer(gameBoard, hud);
+
+      TileContentBuilder tileContentBuilder
+        = new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard);
+
+      hud.Construct(tileContentBuilder, player);
       _spawner.Construct(gameBoard);
       gameBoard.Initialize(_staticDataService, _gameFactory);
-      _player.RunEvents();
     }
 
     private GameBoard CreateGameBoard() => _gameFactory.CreateGameBoard();
-
     private Player CreatePlayer(GameBoard gameBoard, HUD hud) => new Player(_spawner, _monoEventsProvider, _staticDataService, gameBoard, hud);
   }
 }

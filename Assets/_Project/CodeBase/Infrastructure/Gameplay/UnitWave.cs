@@ -34,6 +34,8 @@ namespace CodeBase.Infrastructure.Gameplay {
 
         return -1.0f;
       }
+
+      public bool WaveCompleted => _index >= _wave._spawnSequences.Length;
     }
   }
 }

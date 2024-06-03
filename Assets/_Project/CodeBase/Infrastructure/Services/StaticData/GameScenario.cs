@@ -12,27 +12,40 @@ namespace CodeBase.Infrastructure.Services.StaticData {
     [Serializable]
     public struct State {
       private GameScenario _scenario;
-      private int _index;
       private UnitWave.State _wave;
+      private int _index;
 
       public State(GameScenario scenario) {
         _scenario = scenario;
         _index = 0;
         _wave = _scenario._waves[0].Begin();
+        NextWaveReady = false;
       }
 
       public bool Progress() {
         float deltaTime = _wave.Progress(Time.deltaTime);
 
         while (deltaTime >= 0) {
-          if (++_index >= _scenario._waves.Length) {
+          if (_wave.WaveCompleted) {
+            NextWaveReady = true;
             return false;
           }
 
-          _wave = _scenario._waves[_index].Begin();
+          NextWaveReady = false;
           deltaTime = _wave.Progress(deltaTime);
         }
 
+        return true;
+      }
+
+      public bool NextWaveReady { get; private set; }
+
+      public bool NextWave() {
+        if (_index + 1 >= _scenario._waves.Length) {
+          return false;
+        }
+
+        _wave = _scenario._waves[++_index].Begin();
         return true;
       }
     }
