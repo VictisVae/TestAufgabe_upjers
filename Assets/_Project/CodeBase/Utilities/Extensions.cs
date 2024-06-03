@@ -27,6 +27,8 @@ namespace CodeBase.Utilities {
   public static class UIExtensions {
     public static void AddListener(this Button self, UnityAction action) => self.onClick.AddListener(action);
     public static void RemoveListener(this Button self, UnityAction action) => self.onClick.RemoveListener(action);
+    
+    public static void RemoveAllListeners(this Button self) => self.onClick.RemoveAllListeners();
   }
 
   public static class DirectionExtensions {
