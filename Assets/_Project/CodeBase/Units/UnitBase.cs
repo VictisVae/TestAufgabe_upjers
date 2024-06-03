@@ -1,6 +1,6 @@
 ﻿using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Factory;
-using CodeBase.Infrastructure.Services.StaticData;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using CodeBase.TowerBehaviour;
 using UnityEngine;
@@ -11,9 +11,11 @@ namespace CodeBase.Units {
     protected Transform _model;
     protected UnitMovement _unitMovement;
     protected IGameFactory _unitFactory;
+    private IPlayerService _playerService;
     private void Awake() => TargetPoint = GetComponent<TargetPoint>();
 
-    public virtual void Construct(IGameFactory factory, UnitConfig config) {
+    public virtual void Construct(IGameFactory factory, IPlayerService playerService, UnitConfig config) {
+      _playerService = playerService;
       _unitFactory = factory;
       _unitMovement = new UnitMovement(transform, _model, config);
       float scale = config.Scale.RandomValueInRange;
@@ -25,7 +27,7 @@ namespace CodeBase.Units {
 
       while (_unitMovement.IsProgressExists) {
         if (_unitMovement.TileTo == null) {
-          //TODO Implement Player -- Health on enemy destintaion reach
+          _playerService.TakeDamage();
           Recycle();
           return false;
         }

@@ -4,6 +4,7 @@ using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.AssetManagement;
 using CodeBase.Infrastructure.Services.Input;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.Random;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Utilities;
@@ -28,9 +29,10 @@ namespace CodeBase.Infrastructure.States {
       _globalService.RegisterSingle<IStaticDataService>(new StaticDataService().With(x => x.Initialize()));
       _globalService.RegisterSingle(_stateMachine);
       _globalService.RegisterSingle<IAsset>(new AssetProvider());
+      _globalService.RegisterSingle<IPlayerService>(new PlayerService(_globalService.GetSingle<IStaticDataService>()));
 
-      _globalService.RegisterSingle<IGameFactory>(new GameFactory(_globalService.GetSingle<IAsset>(),
-        _globalService.GetSingle<IStaticDataService>()));
+      _globalService.RegisterSingle<IGameFactory>(new GameFactory(_globalService.GetSingle<IAsset>(), _globalService.GetSingle<IStaticDataService>(),
+        _globalService.GetSingle<IPlayerService>()));
 
       _globalService.RegisterSingle<IInputService>(new InputService());
       _globalService.RegisterSingle<IRandomService>(new RandomService());

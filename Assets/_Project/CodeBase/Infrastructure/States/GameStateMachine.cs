@@ -6,6 +6,7 @@ using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData;
 
 namespace CodeBase.Infrastructure.States {
@@ -18,7 +19,7 @@ namespace CodeBase.Infrastructure.States {
         [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, globalService),
         [typeof(LoadLevelState)] = new LoadLevelState(globalService.GetSingle<IInputService>(), monoEventsProvider,
           globalService.GetSingle<IGameFactory>(), globalService.GetSingle<IStaticDataService>(), globalService.GetSingle<IUnitSpawner>(),
-          sceneLoader)
+          globalService.GetSingle<IPlayerService>(), sceneLoader)
       };
 
     public void Enter<TState>() where TState : class, IState {

@@ -1,11 +1,13 @@
 ﻿using CodeBase.Infrastructure.Services.MonoEvents;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.UI;
 using UnityEngine;
 
 namespace CodeBase.Infrastructure.Gameplay {
-  public class Player {
+  public class ScenarioRunner {
     private readonly IMonoEventsProvider _monoEventsProvider;
+    private readonly IPlayerService _playerService;
     private readonly IUnitSpawner _unitSpawner;
     private readonly GameScenario _scenario;
     private readonly GameBoard _board;
@@ -14,9 +16,10 @@ namespace CodeBase.Infrastructure.Gameplay {
     private float _spawnProgress;
     private bool _isPaused;
 
-    public Player(IUnitSpawner unitSpawner, IMonoEventsProvider monoEventsProvider, IStaticDataService staticDataService, GameBoard board, HUD hud) {
+    public ScenarioRunner(IUnitSpawner unitSpawner, IMonoEventsProvider monoEventsProvider, IStaticDataService staticDataService, IPlayerService playerService, GameBoard board, HUD hud) {
       _unitSpawner = unitSpawner;
       _monoEventsProvider = monoEventsProvider;
+      _playerService = playerService;
       _scenario = staticDataService.GetStaticData<GameScenario>();
       _board = board;
       _hud = hud;
@@ -28,25 +31,20 @@ namespace CodeBase.Infrastructure.Gameplay {
       //   _isPaused = !_isPaused;
       //   Time.timeScale = _isPaused ? 0.0f : 1.0f;
       // }
-      
       _activeScenario.Progress();
 
       if (_activeScenario.NextWaveReady && _unitSpawner.Collection.IsEmpty) {
         WaveCompleted();
       }
 
-      // if (_scenarioInProgress) {
-      //   if (_currentPlayerHealth <= 0) {
-      //     Debug.Log("Defeated");
-      //     GameFinished();
-      //   }
-      //
-      //   if (_activeScenario.Progress() == false && _unitSpawner.Collection.IsEmpty) {
-      //     Debug.Log("Victory");
-      //     GameFinished();
-      //     return;
-      //   }
-      // }
+      if (_playerService.IsAlive == false) {
+        Debug.Log("Defeated");
+      }
+
+      if (_activeScenario.Progress() == false && _unitSpawner.Collection.IsEmpty) {
+        Debug.Log("Victory");
+        return;
+      }
 
       _unitSpawner.Collection.GameUpdate();
       _board.GameUpdate();
@@ -66,6 +64,7 @@ namespace CodeBase.Infrastructure.Gameplay {
 
     private void RunEvents() => _monoEventsProvider.OnApplicationUpdateEvent += Update;
     private void StopEvents() => _monoEventsProvider.OnApplicationUpdateEvent -= Update;
+
     private void RunNextWave() {
       RunEvents();
 

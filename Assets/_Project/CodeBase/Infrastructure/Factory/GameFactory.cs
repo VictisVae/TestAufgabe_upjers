@@ -1,6 +1,7 @@
 ﻿using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services.AssetManagement;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.TileContentData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
@@ -15,11 +16,13 @@ namespace CodeBase.Infrastructure.Factory {
   public class GameFactory : IGameFactory {
     private readonly IAsset _asset;
     private readonly IStaticDataService _staticDataService;
+    private readonly IPlayerService _playerService;
     private Scene _scene;
 
-    public GameFactory(IAsset asset, IStaticDataService staticDataService) {
+    public GameFactory(IAsset asset, IStaticDataService staticDataService, IPlayerService playerService) {
       _asset = asset;
       _staticDataService = staticDataService;
+      _playerService = playerService;
     }
 
     public GameBoard CreateGameBoard() => _asset.Initialize<GameBoard>(Constants.AssetsPath.GameBoard);
@@ -40,7 +43,7 @@ namespace CodeBase.Infrastructure.Factory {
     public UnitBase Create(UnitType type) {
       UnitConfig config = _staticDataService.GetStaticData<UnitConfigStorage>().GetUnitConfig(type);
       UnitBase instance = CreateGameObjectInstance(config.Prefab);
-      instance.Construct(this, config);
+      instance.Construct(this, _playerService, config);
       return instance;
     }
 

@@ -1,5 +1,6 @@
 ﻿using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,10 +13,13 @@ namespace CodeBase.UI {
     [SerializeField]
     private TowerBuildingButtonData[] _towerBuildingButtons;
     [SerializeField]
-    private WaveRunnerButton _waveRunner; 
+    private WaveRunnerButton _waveRunner;
+    [SerializeField]
+    private PlayerView _playerView;
     
     private TileContentBuilder _tileContentBuilder;
-    private Player _player;
+    private ScenarioRunner _scenarioRunner;
+    private IPlayerService _playerService;
 
     protected override void Start() {
       foreach (TileBuildingButtonData tileBuildingButton in _tileBuildingButtons) {
@@ -25,7 +29,9 @@ namespace CodeBase.UI {
       foreach (TowerBuildingButtonData towerBuildingButton in _towerBuildingButtons) {
         towerBuildingButton.Button.AddListener(() => BuildTower(towerBuildingButton.Type));
       }
-
+      
+      _playerView.SetCurrentHealth(_playerService.Health);
+      _playerService.OnHealthChangedEvent += _playerView.SetCurrentHealth;
       _waveRunner.SubscribeAction(RunFirstWave);
       _tileContentBuilder.RunEvents();
     }
@@ -39,16 +45,18 @@ namespace CodeBase.UI {
         towerBuildingButton.Button.RemoveAllListeners();
       }
 
+      _playerService.OnHealthChangedEvent -= _playerView.SetCurrentHealth;
       _waveRunner.UnsubscribeAll();
       _tileContentBuilder.StopEvents();
     }
 
-    public void Construct(TileContentBuilder contentBuilder, Player player) {
-      _player = player;
+    public void Construct(IPlayerService playerService, TileContentBuilder contentBuilder, ScenarioRunner scenarioRunner) {
+      _playerService = playerService;
+      _scenarioRunner = scenarioRunner;
       _tileContentBuilder = contentBuilder;
     }
 
-    private void RunFirstWave() => _player.BeginNewGame();
+    private void RunFirstWave() => _scenarioRunner.BeginNewGame();
 
     private void BuildTile(TileContentType tileContentType) {
       _tileContentBuilder.AllowFlyingBuilding();

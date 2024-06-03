@@ -1,12 +1,12 @@
 ﻿using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Factory;
-using CodeBase.Infrastructure.Services.StaticData;
+using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using UnityEngine;
 
 namespace CodeBase.Units {
   public class AirUnit : UnitBase {
-    public override void Construct(IGameFactory factory, UnitConfig config) {
+    public override void Construct(IGameFactory factory, IPlayerService playerService, UnitConfig config) {
       _unitFactory = factory;
       _unitMovement = new AirUnitMovement(transform, _model, config);
       float scale = config.Scale.RandomValueInRange;
