@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   Prefab: {fileID: 6007436895934908530, guid: d475cba94cc62e740877baed1de450e4, type: 3}
+  BringsGold: 1
+  GoldValue: 200

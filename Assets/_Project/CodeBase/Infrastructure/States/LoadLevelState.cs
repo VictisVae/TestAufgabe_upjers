@@ -5,6 +5,7 @@ using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.Player;
+using CodeBase.Infrastructure.Services.Random;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.UI;
 
@@ -17,16 +18,18 @@ namespace CodeBase.Infrastructure.States {
     private readonly IStaticDataService _staticDataService;
     private readonly IUnitSpawner _spawner;
     private readonly IPlayerService _playerService;
+    private readonly IRandomService _randomService;
 
     public LoadLevelState
       (IInputService input, IMonoEventsProvider monoEventsProvider, IGameFactory gameFactory, IStaticDataService staticDataService,
-        IUnitSpawner spawner, IPlayerService playerService, SceneLoader sceneLoader) {
+        IUnitSpawner spawner, IPlayerService playerService, IRandomService randomService, SceneLoader sceneLoader) {
       _input = input;
       _sceneLoader = sceneLoader;
       _monoEventsProvider = monoEventsProvider;
       _gameFactory = gameFactory;
       _staticDataService = staticDataService;
       _playerService = playerService;
+      _randomService = randomService;
       _spawner = spawner;
     }
 
@@ -43,12 +46,14 @@ namespace CodeBase.Infrastructure.States {
       TileContentBuilder tileContentBuilder
         = new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard);
 
-      hud.Construct(_playerService, tileContentBuilder, scenarioRunner);
+      hud.Construct(_playerService, _staticDataService, tileContentBuilder, scenarioRunner);
       _spawner.Construct(gameBoard);
-      gameBoard.Initialize(_staticDataService, _gameFactory);
+      gameBoard.Initialize(_staticDataService, _randomService, _gameFactory, _playerService);
     }
 
     private GameBoard CreateGameBoard() => _gameFactory.CreateGameBoard();
-    private ScenarioRunner ScenarioRunner(GameBoard gameBoard, HUD hud) => new ScenarioRunner(_spawner, _monoEventsProvider, _staticDataService, _playerService, gameBoard, hud);
+
+    private ScenarioRunner ScenarioRunner
+      (GameBoard gameBoard, HUD hud) => new ScenarioRunner(_spawner, _monoEventsProvider, _staticDataService, _playerService, gameBoard, hud);
   }
 }

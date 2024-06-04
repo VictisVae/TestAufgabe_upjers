@@ -10,6 +10,7 @@ namespace CodeBase.Infrastructure.Services.StaticData.TowerData {
     public float ShootFrequency;
     [Range(1, 50)]
     public int BulletDamage;
+    public int GoldValue;
     public Tower Prefab;
   }
 }

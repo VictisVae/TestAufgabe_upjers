@@ -17,5 +17,6 @@ namespace CodeBase.Infrastructure.Services.StaticData.TileContentData {
     }
 
     public TileContent GetTileContent(TileContentType tileType) => _tileContentMap[tileType].Prefab;
+    public TileContentConfig GetTileConfig(TileContentType tileType) => _tileContentMap[tileType];
   }
 }

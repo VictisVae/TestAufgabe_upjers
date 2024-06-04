@@ -6,5 +6,7 @@ namespace CodeBase.Infrastructure.Services.StaticData.TileContentData {
   public class TileContentConfig : ScriptableObject {
     public TileContentType Type;
     public TileContent Prefab;
+    public bool BringsGold;
+    public int GoldValue;
   }
 }

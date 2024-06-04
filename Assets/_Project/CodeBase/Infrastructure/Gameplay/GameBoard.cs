@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Factory;
+using CodeBase.Infrastructure.Services.Player;
+using CodeBase.Infrastructure.Services.Random;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.BoardData;
+using CodeBase.Infrastructure.Services.StaticData.TileContentData;
+using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using CodeBase.TowerBehaviour;
 using CodeBase.Utilities;
 using UnityEngine;
@@ -19,10 +23,14 @@ namespace CodeBase.Infrastructure.Gameplay {
     private Transform _ground;
     private BoardTile[] _tiles;
     private IStaticDataService _staticDataService;
+    private IRandomService _randomService;
     private IGameFactory _factory;
+    private IPlayerService _playerService;
     private Vector2Int _boardSize;
 
-    public void Initialize(IStaticDataService staticDataService, IGameFactory contentFactory) {
+    public void Initialize(IStaticDataService staticDataService, IRandomService randomService, IGameFactory contentFactory, IPlayerService playerService) {
+      _playerService = playerService;
+      _randomService = randomService;
       _factory = contentFactory;
       _staticDataService = staticDataService;
       _boardSize = staticDataService.GetStaticData<BoardConfig>().BoardSize;
@@ -47,13 +55,20 @@ namespace CodeBase.Infrastructure.Gameplay {
       }
     }
 
-    public void PlaceDestination(BoardTile tile) {
+    public void PlaceDestination(BoardTile tile, bool isSceneRunPlacement = false) {
       SetTileDestination(tile);
       FindPathsSuccessful();
 
       if (_destinationPoints.Contains(tile) == false) {
         _destinationPoints.Add(tile);
       }
+
+      if (isSceneRunPlacement) {
+        return;
+      }
+      
+      var config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.SpawnPoint);
+      _playerService.AddCurrency(config.GoldValue);
     }
 
     public void RemoveDestination(BoardTile tile) {
@@ -70,6 +85,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       SetTileGround(tile);
 
       if (FindPathsSuccessful()) {
+        _playerService.SpendCurrency(_staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.Ground).GoldValue);
         return;
       }
 
@@ -97,10 +113,11 @@ namespace CodeBase.Infrastructure.Gameplay {
       placementTile.Content.SetOccupiedBy(tower);
       tower.transform.position = placementTile.transform.position;
 
-      foreach (var occupiedTile in tiles) {
+      foreach (BoardTile occupiedTile in tiles) {
         occupiedTile.Content.SetOccupiedBy(tower);
       }
 
+      _playerService.SpendCurrency(_staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(type).GoldValue);
       _contentToUpdate.Add(tower);
     }
 
@@ -112,16 +129,23 @@ namespace CodeBase.Infrastructure.Gameplay {
       BoardTile[] occupiedTiles = tile.GetOccupied();
       _contentToUpdate.Remove(occupiedTiles[0].Content);
 
-      foreach (var occupiedTile in occupiedTiles) {
+      foreach (BoardTile occupiedTile in occupiedTiles) {
         SetTileGround(occupiedTile);
         occupiedTile.Content.ClearOccupation();
         occupiedTile.ClearOccupation();
       }
     }
 
-    public void PlaceSpawnPoint(BoardTile tile) {
+    public void PlaceSpawnPoint(BoardTile tile, bool isSceneRunPlacement = false) {
       SetTileSpawnPoint(tile);
       _spawnPoints.Add(tile);
+
+      if (isSceneRunPlacement) {
+        return;
+      }
+      
+      var config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.SpawnPoint);
+      _playerService.AddCurrency(config.GoldValue);
     }
 
     public void PlaceEmpty(BoardTile tile) => SetTileEmpty(tile);
@@ -137,24 +161,34 @@ namespace CodeBase.Infrastructure.Gameplay {
 
     public BoardTile GetTile(float posX, float posZ) => IsInBorders(posX, posZ, out int x, out int y) ? CastIntersectionIndex(x, y) : null;
 
-    public bool IsInBorders(float posX, float posZ, out int x, out int y) {
-      x = (int)(posX + _boardSize.x * Half);
-      y = (int)(posZ + _boardSize.y * Half);
-      return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
+    public BoardTile GetRandomEmptyTile() {
+      BoardTile tile = _tiles[_randomService.Range(0, _tiles.Length)];
+
+      while (tile.Content.IsEmpty == false) {
+        tile = _tiles[_randomService.Range(0, _tiles.Length)];
+      }
+
+      return tile;
     }
 
     public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
     public BoardTile GetDestinationPoints(int index) => _destinationPoints[index];
 
-    public void Clear() {
+    private bool IsInBorders(float posX, float posZ, out int x, out int y) {
+      x = (int)(posX + _boardSize.x * Half);
+      y = (int)(posZ + _boardSize.y * Half);
+      return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
+    }
+
+    private void Clear() {
       foreach (BoardTile tile in _tiles) {
         SetTileEmpty(tile);
       }
 
       _spawnPoints.Clear();
       _contentToUpdate.Clear();
-      PlaceDestination(_tiles[_tiles.Length / 2]);
-      PlaceSpawnPoint(_tiles[0]);
+      PlaceDestination(GetRandomEmptyTile(), true);
+      PlaceSpawnPoint(GetRandomEmptyTile(), true);
     }
 
     private void SetTileEmpty(BoardTile tile) {

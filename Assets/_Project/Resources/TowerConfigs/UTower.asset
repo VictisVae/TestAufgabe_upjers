@@ -17,4 +17,5 @@ MonoBehaviour:
     _towerType: 3
   ShootFrequency: 10
   BulletDamage: 50
+  GoldValue: 200
   Prefab: {fileID: 3207852529346731881, guid: bc09a3580b890414bb328cf6c5e162ec, type: 3}

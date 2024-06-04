@@ -66,13 +66,19 @@ namespace CodeBase.BoardContent {
     public void AllowFlyingBuilding() => _flyingBuildingAllowed = true;
 
     public void StartPlacingContent(TileContentType type) {
-      if (_flyingTileContent != null) {
-        Object.Destroy(_flyingTileContent.gameObject);
+      if (type == TileContentType.Ground) {
+        if (_flyingTileContent != null) {
+          Object.Destroy(_flyingTileContent.gameObject);
+        }
+
+        _flyingTileContent = _gameFactory.Create(type);
+        _placementAvailable = IsTilePlacementPossible;
+        _placementOnClick = PlacementOnClick(type);
+        return;
       }
 
-      _flyingTileContent = _gameFactory.Create(type);
-      _placementAvailable = IsTilePlacementPossible;
-      _placementOnClick = PlacementOnClick(type);
+      _flyingBuildingAllowed = false;
+      PlacementOnClick(type).Invoke();
     }
 
     public void StartPlacingContent(TowerType towerType) {
@@ -166,14 +172,20 @@ namespace CodeBase.BoardContent {
     }
 
     private void PlaceSpawnPoint() {
-      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      if (_board.SpawnPointCount >= 5) {
+        return;
+      }
+      
+      BoardTile tile = _board.GetRandomEmptyTile();
       _board.PlaceSpawnPoint(tile);
     }
 
     private void PlaceDestination() {
-      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      if (_board.DestinationPointCount >= 4) {
+        return;
+      }
+      
+      BoardTile tile = _board.GetRandomEmptyTile();
       _board.PlaceDestination(tile);
     }
 
