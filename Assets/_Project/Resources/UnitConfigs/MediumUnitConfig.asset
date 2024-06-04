@@ -15,7 +15,7 @@ MonoBehaviour:
   Type: 1
   Prefab: {fileID: 2214460684964403632, guid: b81018e7b0898324a950cdc524559e7a, type: 3}
   Health: 100
-  Gold: 30
+  Gold: 15
   Scale:
     _min: 1
     _max: 1.2
@@ -24,4 +24,4 @@ MonoBehaviour:
     _max: 0.1
   Speed:
     _min: 1
-    _max: 1.5
+    _max: 2

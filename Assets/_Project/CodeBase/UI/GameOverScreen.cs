@@ -44,14 +44,14 @@ namespace CodeBase.UI {
     public void Appear(bool isVictory) {
       _canvas.enabled = true;
       _gameOverText.text = isVictory ? "Victory!" : "Defeat";
+      _unitSpawner.Collection.Clear();
+      _gameBoard.ClearLists();
     }
 
     private async void Restart() {
+      _canvas.enabled = false;
       await _gameFactory.Clear();
       _playerService.ResetValues();
-      _unitSpawner.Collection.Clear();
-      _gameBoard.Clear();
-      _canvas.enabled = false;
       _gameStateMachine.Enter<BootstrapState>();
     }
   }

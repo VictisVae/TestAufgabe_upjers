@@ -5,6 +5,7 @@ using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
+using CodeBase.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -109,7 +110,7 @@ namespace CodeBase.BoardContent {
       }
 
       _currentTowerType = towerType;
-      _flyingTileContent = _gameFactory.CreateTower(towerType);
+      _flyingTileContent = _gameFactory.CreateTower(towerType).With(x => x.ShowRadius());
       _placementAvailable = IsTowerPlacementPossible;
       _placementOnClick = PlaceTower;
     }

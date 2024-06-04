@@ -28,6 +28,7 @@ namespace CodeBase.Units {
         behaviour.Recycle();
       }
 
+      Targets.Clear();
       _behaviours.Clear();
     }
 

@@ -6,7 +6,9 @@ using CodeBase.TowerBehaviour;
 using UnityEngine;
 
 namespace CodeBase.BoardContent {
+  [RequireComponent(typeof(TowerVisualRadius))]
   public class Tower : TileContent {
+    private TowerVisualRadius _towerRadius;
     [SerializeField]
     private Transform _turretPlatform;
     [SerializeField]
@@ -22,6 +24,8 @@ namespace CodeBase.BoardContent {
     private Func<List<Target>> _targets;
     private Target _target;
 
+    private void Awake() => _towerRadius = GetComponent<TowerVisualRadius>();
+
     public void Construct(TowerConfig config) {
       _shootFrequency = config.ShootFrequency;
       _damage = config.BulletDamage;
@@ -35,6 +39,8 @@ namespace CodeBase.BoardContent {
     }
 
     public void ReceiveTargets(Func<List<Target>> targets) => _targets = targets;
+    public void ShowRadius() => _towerRadius.ShowRadius();
+    public void HideRadius() => _towerRadius.HideRadius();
 
     private bool IsTargetAcquired() {
       _target = FindTarget();
@@ -110,7 +116,8 @@ namespace CodeBase.BoardContent {
         Gizmos.DrawLine(position, _target.transform.position);
       }
     }
-    
+
     public new TowerType TowerType { get; private set; }
+    public float TargetingRange => _targetingRange;
   }
 }

@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2817306300662067207}
   - component: {fileID: 3207852529346731881}
+  - component: {fileID: 2961669372598924822}
   m_Layer: 0
   m_Name: DoubleTower
   m_TagString: Untagged
@@ -140,6 +141,22 @@ MonoBehaviour:
   - {fileID: 8477758365108449779}
   - {fileID: 2932119129062075271}
   _targetingRange: 4
+--- !u!114 &2961669372598924822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4544109579088391525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1b6cf7a8af3d58488e61806c7669050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radiusPrefab: {fileID: 4913434388696717072, guid: 10dffd98df1c7f843bf2e99fe6c10838,
+    type: 3}
+  _turretBase: {fileID: 4485079947389781058}
+  _radiusHeight: 0.3
 --- !u!1 &6461707957362484250
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +350,12 @@ Transform:
 --- !u!4 &3745671893050222556 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6713803518506139461, guid: 6ab4a941639d4c241aaf47a18141b78e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7986980038958323865}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4485079947389781058 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5830262066805103835, guid: 6ab4a941639d4c241aaf47a18141b78e,
     type: 3}
   m_PrefabInstance: {fileID: 7986980038958323865}
   m_PrefabAsset: {fileID: 0}

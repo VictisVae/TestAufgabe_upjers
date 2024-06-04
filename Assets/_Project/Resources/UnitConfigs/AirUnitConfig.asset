@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 3
   Prefab: {fileID: 4813001223866782638, guid: 2eef313ef520cbf4c80e436fc4e3de15, type: 3}
-  Health: 80
-  Gold: 50
+  Health: 160
+  Gold: 40
   Scale:
-    _min: 0.8
+    _min: 1
     _max: 1.2
   PathOffset:
     _min: 0
     _max: 0
   Speed:
-    _min: 0.8
-    _max: 1.2
+    _min: 1
+    _max: 1.4

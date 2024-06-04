@@ -31,16 +31,19 @@ namespace CodeBase.Infrastructure.Gameplay {
     private void Update() {
       _activeScenario.Progress();
 
-      if (_activeScenario.NextWaveReady && _unitSpawner.Collection.IsEmpty) {
+      if (_activeScenario.WaveCompleted && _unitSpawner.Collection.IsEmpty) {
         WaveCompleted();
       }
 
       if (_playerService.IsAlive == false) {
         _gameOverScreen.Appear(false);
+        StopEvents();
+        return;
       }
 
       if (_wavesLeft <= 0 && _unitSpawner.Collection.IsEmpty) {
         _gameOverScreen.Appear(true);
+        StopEvents();
         return;
       }
 

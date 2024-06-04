@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2817306300662067207}
   - component: {fileID: 3207852529346731881}
+  - component: {fileID: 2961669372598924822}
   m_Layer: 0
   m_Name: SimpleTower
   m_TagString: Untagged
@@ -55,6 +56,22 @@ MonoBehaviour:
   - {fileID: 101158751589031118}
   - {fileID: 6660988611533407930}
   _targetingRange: 3
+--- !u!114 &2961669372598924822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4544109579088391525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1b6cf7a8af3d58488e61806c7669050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radiusPrefab: {fileID: 4913434388696717072, guid: 10dffd98df1c7f843bf2e99fe6c10838,
+    type: 3}
+  _turretBase: {fileID: 5403857187282168191}
+  _radiusHeight: 0.3
 --- !u!1001 &1880001118805652900
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -184,6 +201,12 @@ Transform:
 --- !u!4 &5132735456788351713 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6713803518506139461, guid: 6ab4a941639d4c241aaf47a18141b78e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1880001118805652900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5403857187282168191 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5830262066805103835, guid: 6ab4a941639d4c241aaf47a18141b78e,
     type: 3}
   m_PrefabInstance: {fileID: 1880001118805652900}
   m_PrefabAsset: {fileID: 0}

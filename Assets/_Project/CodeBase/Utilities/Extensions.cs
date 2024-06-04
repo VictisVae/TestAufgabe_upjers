@@ -9,7 +9,9 @@ namespace CodeBase.Utilities {
   public static class Extensions {
     public static void Enable(this GameObject self) => self.SetActive(true);
     public static void Disable(this GameObject self) => self.SetActive(false);
-
+    public static void Enable(this Transform self) => self.gameObject.SetActive(true);
+    public static void Disable(this Transform self) => self.gameObject.SetActive(false);
+    
     public static T With<T>(this T self, Action<T> set) {
       set.Invoke(self);
       return self;

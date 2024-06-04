@@ -102,7 +102,7 @@ namespace CodeBase.Infrastructure.Gameplay {
         occupiedTile.MakeConjunction(tiles);
       }
 
-      Tower tower = GetTower(type).With(x => x.ReceiveTargets(targets));
+      Tower tower = GetTower(type).With(x => x.ReceiveTargets(targets)).With(x => x.HideRadius());
       placementTile.Content.SetOccupiedBy(tower);
       tower.transform.position = placementTile.transform.position;
 
@@ -157,23 +157,27 @@ namespace CodeBase.Infrastructure.Gameplay {
     public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
     public BoardTile GetDestinationPoints(int index) => _destinationPoints[index];
 
-    private bool IsInBorders(float posX, float posZ, out int x, out int y) {
-      x = (int)(posX + _boardSize.x * Half);
-      y = (int)(posZ + _boardSize.y * Half);
-      return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
-    }
-
     public void Clear() {
       foreach (BoardTile tile in _tiles) {
         SetTileEmpty(tile);
       }
 
+      ClearLists();
+      PlaceDestination(GetRandomEmptyTile(), true);
+      PlaceSpawnPoint(GetRandomEmptyTile(), true);
+    }
+
+    public void ClearLists() {
+      _contentToUpdate.Clear();
       _searchFrontier.Clear();
       _destinationPoints.Clear();
       _spawnPoints.Clear();
-      _contentToUpdate.Clear();
-      PlaceDestination(GetRandomEmptyTile(), true);
-      PlaceSpawnPoint(GetRandomEmptyTile(), true);
+    }
+
+    private bool IsInBorders(float posX, float posZ, out int x, out int y) {
+      x = (int)(posX + _boardSize.x * Half);
+      y = (int)(posZ + _boardSize.y * Half);
+      return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
     }
 
     private void SetTileEmpty(BoardTile tile) {
