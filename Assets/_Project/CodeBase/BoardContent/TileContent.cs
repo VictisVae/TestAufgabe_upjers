@@ -32,11 +32,12 @@ namespace CodeBase.BoardContent {
     public virtual void GameUpdate() {}
     public void SetOccupiedBy(Tower tower) => _occupationTower = tower;
     public void ClearOccupation() => _occupationTower = null;
-    public bool IsSpawnPoint => _type == TileContentType.SpawnPoint;
     public bool IsDestination => _type == TileContentType.Destination;
     public bool IsGround => _type == TileContentType.Ground;
     public bool IsEmpty => _type == TileContentType.Empty;
-    public bool IsOccupied => _occupationTower is not null;
+    public bool IsOccupied => _occupationTower != null;
+    public TowerType TowerType => _occupationTower.TowerType;
     public bool IsBlockingPath => _type is TileContentType.Ground or TileContentType.Tower;
+    public Tower OccupationTower => _occupationTower;
   }
 }

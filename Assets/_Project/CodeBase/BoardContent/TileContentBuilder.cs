@@ -37,6 +37,7 @@ namespace CodeBase.BoardContent {
 
     private void Update() {
       if (_flyingBuildingAllowed == false) {
+        TrySellTileContent();
         return;
       }
 
@@ -58,6 +59,27 @@ namespace CodeBase.BoardContent {
         _flyingTileContent = null;
         RestrictFlyingBuilding();
         _placementOnClick();
+      }
+    }
+
+    private void TrySellTileContent() {
+      if (_input.MouseButtonDown(0) == false) {
+        return;
+      }
+
+      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+        return;
+      }
+
+      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      
+      if (tile.Content.IsOccupied) {
+        SellTower(tile);
+        return;
+      }
+
+      if (tile.Content.IsGround) {
+        SellGround(tile);
       }
     }
 
@@ -92,24 +114,8 @@ namespace CodeBase.BoardContent {
       _placementOnClick = PlaceTower;
     }
 
-    public void RemoveTower() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
-        return;
-      }
-
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      _board.RemoveTower(tile);
-    }
-
-    public void RemoveGround() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
-        return;
-      }
-
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      _board.RemoveGround(tile);
-    }
-
+    private void SellTower(BoardTile tile) => _board.RemoveTower(tile);
+    private void SellGround(BoardTile tile) => _board.RemoveGround(tile);
     private void RestrictFlyingBuilding() => _flyingBuildingAllowed = false;
 
     private Action PlacementOnClick(TileContentType type) {

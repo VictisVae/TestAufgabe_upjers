@@ -259,7 +259,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2817306300662067207}
   - component: {fileID: 3207852529346731881}
-  - component: {fileID: 3822863690732138223}
   m_Layer: 0
   m_Name: UTower
   m_TagString: Untagged
@@ -310,18 +309,6 @@ MonoBehaviour:
   - {fileID: 5611190416341861205}
   - {fileID: 1209503973789128993}
   _targetingRange: 5
---- !u!114 &3822863690732138223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4544109579088391525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4299f23437604b79b38c9cad886cee73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6461707957362484250
 GameObject:
   m_ObjectHideFlags: 0

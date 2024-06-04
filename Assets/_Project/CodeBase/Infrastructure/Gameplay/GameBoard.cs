@@ -28,7 +28,8 @@ namespace CodeBase.Infrastructure.Gameplay {
     private IPlayerService _playerService;
     private Vector2Int _boardSize;
 
-    public void Initialize(IStaticDataService staticDataService, IRandomService randomService, IGameFactory contentFactory, IPlayerService playerService) {
+    public void Initialize
+      (IStaticDataService staticDataService, IRandomService randomService, IGameFactory contentFactory, IPlayerService playerService) {
       _playerService = playerService;
       _randomService = randomService;
       _factory = contentFactory;
@@ -66,19 +67,9 @@ namespace CodeBase.Infrastructure.Gameplay {
       if (isSceneRunPlacement) {
         return;
       }
-      
-      var config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.SpawnPoint);
+
+      TileContentConfig config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.SpawnPoint);
       _playerService.AddCurrency(config.GoldValue);
-    }
-
-    public void RemoveDestination(BoardTile tile) {
-      if (tile.Content.IsDestination == false || _destinationPoints.Count <= 1) {
-        return;
-      }
-
-      _destinationPoints.Remove(tile);
-      SetTileEmpty(tile);
-      FindPathsSuccessful();
     }
 
     public void PlaceGround(BoardTile tile) {
@@ -100,6 +91,8 @@ namespace CodeBase.Infrastructure.Gameplay {
 
       SetTileEmpty(tile);
       FindPathsSuccessful();
+      TileContentConfig config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.Ground);
+      _playerService.AddCurrency(config.GoldValue);
     }
 
     public void PlaceTower(BoardTile[] tiles, TowerType type, Func<List<Target>> targets) {
@@ -122,18 +115,18 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void RemoveTower(BoardTile tile) {
-      if (tile.Content.IsOccupied == false) {
-        return;
-      }
-
+      TowerConfig config = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(tile.Content.TowerType);
       BoardTile[] occupiedTiles = tile.GetOccupied();
-      _contentToUpdate.Remove(occupiedTiles[0].Content);
+      _contentToUpdate.Remove(tile.Content.OccupationTower);
+      tile.Content.OccupationTower.Recycle();
 
       foreach (BoardTile occupiedTile in occupiedTiles) {
         SetTileGround(occupiedTile);
         occupiedTile.Content.ClearOccupation();
         occupiedTile.ClearOccupation();
       }
+
+      _playerService.AddCurrency(config.GoldValue);
     }
 
     public void PlaceSpawnPoint(BoardTile tile, bool isSceneRunPlacement = false) {
@@ -143,22 +136,12 @@ namespace CodeBase.Infrastructure.Gameplay {
       if (isSceneRunPlacement) {
         return;
       }
-      
-      var config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.SpawnPoint);
+
+      TileContentConfig config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.SpawnPoint);
       _playerService.AddCurrency(config.GoldValue);
     }
 
     public void PlaceEmpty(BoardTile tile) => SetTileEmpty(tile);
-
-    public void RemoveSpawnPoint(BoardTile tile) {
-      if (tile.Content.IsSpawnPoint == false || _spawnPoints.Count <= 1) {
-        return;
-      }
-
-      _spawnPoints.Remove(tile);
-      SetTileEmpty(tile);
-    }
-
     public BoardTile GetTile(float posX, float posZ) => IsInBorders(posX, posZ, out int x, out int y) ? CastIntersectionIndex(x, y) : null;
 
     public BoardTile GetRandomEmptyTile() {

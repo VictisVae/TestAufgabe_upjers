@@ -25,6 +25,7 @@ namespace CodeBase.BoardContent {
     public void Construct(TowerConfig config) {
       _shootFrequency = config.ShootFrequency;
       _damage = config.BulletDamage;
+      TowerType = config.BuildScheme.TowerType;
     }
 
     public override void GameUpdate() {
@@ -109,5 +110,7 @@ namespace CodeBase.BoardContent {
         Gizmos.DrawLine(position, _target.transform.position);
       }
     }
+    
+    public new TowerType TowerType { get; private set; }
   }
 }

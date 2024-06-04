@@ -5,6 +5,6 @@ namespace CodeBase.UI {
   public class TileBuildingButtonData : BuildingButtonBase {
     [field: SerializeField]
     public TileContentType Type { get; private set; }
-    protected override void Awake() => MeshButtonName.text = $"Build{Type}";
+    protected override void Awake() => MeshButtonName.text = $"Build {Type}";
   }
 }
