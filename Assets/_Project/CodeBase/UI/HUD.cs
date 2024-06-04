@@ -34,6 +34,7 @@ namespace CodeBase.UI {
       _playerView.SetCurrentGold(_playerService.Gold);
       _playerService.OnHealthChangedEvent += _playerView.SetCurrentHealth;
       _playerService.OnGoldChangedEvent += _playerView.SetCurrentGold;
+      _waveRunner.UpdateDisplay(_scenarioRunner.TotalWaves);
       _waveRunner.SubscribeAction(RunFirstWave);
       _tileContentBuilder.RunEvents();
     }

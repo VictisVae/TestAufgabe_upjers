@@ -70,5 +70,7 @@ namespace CodeBase.Infrastructure.Gameplay {
         Debug.Log("Victory");
       }
     }
+
+    public int TotalWaves => _scenario.Waves.Length;
   }
 }

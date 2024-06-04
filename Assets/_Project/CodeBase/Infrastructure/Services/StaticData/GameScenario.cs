@@ -7,6 +7,7 @@ namespace CodeBase.Infrastructure.Services.StaticData {
   public class GameScenario : EntityStaticData {
     [SerializeField]
     private UnitWave[] _waves;
+    public UnitWave[] Waves => _waves;
     public State Begin() => new State(this);
 
     [Serializable]
