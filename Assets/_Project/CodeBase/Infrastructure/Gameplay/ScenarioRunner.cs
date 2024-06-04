@@ -2,7 +2,6 @@
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.UI;
-using UnityEngine;
 
 namespace CodeBase.Infrastructure.Gameplay {
   public class ScenarioRunner {
@@ -11,26 +10,25 @@ namespace CodeBase.Infrastructure.Gameplay {
     private readonly IUnitSpawner _unitSpawner;
     private readonly GameScenario _scenario;
     private readonly GameBoard _board;
+    private readonly GameOverScreen _gameOverScreen;
     private readonly HUD _hud;
     private GameScenario.State _activeScenario;
+    private int _wavesLeft;
     private float _spawnProgress;
     private bool _isPaused;
 
-    public ScenarioRunner(IUnitSpawner unitSpawner, IMonoEventsProvider monoEventsProvider, IStaticDataService staticDataService, IPlayerService playerService, GameBoard board, HUD hud) {
+    public ScenarioRunner(IUnitSpawner unitSpawner, IMonoEventsProvider monoEventsProvider, IStaticDataService staticDataService, IPlayerService playerService, GameBoard board, HUD hud, GameOverScreen gameOverScreen) {
       _unitSpawner = unitSpawner;
       _monoEventsProvider = monoEventsProvider;
       _playerService = playerService;
       _scenario = staticDataService.GetStaticData<GameScenario>();
       _board = board;
       _hud = hud;
+      _gameOverScreen = gameOverScreen;
+      _wavesLeft = TotalWaves;
     }
 
     private void Update() {
-      //TODO Pause und Beschleinigung
-      // if (_input.KeyDown(KeyCode.Space)) {
-      //   _isPaused = !_isPaused;
-      //   Time.timeScale = _isPaused ? 0.0f : 1.0f;
-      // }
       _activeScenario.Progress();
 
       if (_activeScenario.NextWaveReady && _unitSpawner.Collection.IsEmpty) {
@@ -38,11 +36,11 @@ namespace CodeBase.Infrastructure.Gameplay {
       }
 
       if (_playerService.IsAlive == false) {
-        Debug.Log("Defeated");
+        _gameOverScreen.Appear(false);
       }
 
-      if (_activeScenario.Progress() == false && _unitSpawner.Collection.IsEmpty) {
-        Debug.Log("Victory");
+      if (_wavesLeft <= 0 && _unitSpawner.Collection.IsEmpty) {
+        _gameOverScreen.Appear(true);
         return;
       }
 
@@ -51,6 +49,7 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     private void WaveCompleted() {
+      _wavesLeft--;
       StopEvents();
       _hud.SetNextWaveReady(RunNextWave);
     }
@@ -65,10 +64,7 @@ namespace CodeBase.Infrastructure.Gameplay {
 
     private void RunNextWave() {
       RunEvents();
-
-      if (_activeScenario.NextWave() == false) {
-        Debug.Log("Victory");
-      }
+      _activeScenario.NextWave();
     }
 
     public int TotalWaves => _scenario.Waves.Length;

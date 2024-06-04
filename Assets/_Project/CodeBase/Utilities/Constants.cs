@@ -6,6 +6,7 @@
     public class AssetsPath {
       public const string GameBoard = nameof(GameBoard);
       public const string HUD = nameof(HUD);
+      public const string GameOverScreen = nameof(GameOverScreen);
     }
 
     public class ResourcesPath {

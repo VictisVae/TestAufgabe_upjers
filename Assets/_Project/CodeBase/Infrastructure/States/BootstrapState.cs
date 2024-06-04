@@ -17,7 +17,8 @@ namespace CodeBase.Infrastructure.States {
     private readonly SceneLoader _sceneLoader;
     private readonly GlobalService _globalService;
 
-    public BootstrapState(IGameStateMachine stateMachine, IMonoEventsProvider monoEventsProvider, SceneLoader sceneLoader, GlobalService globalService) {
+    public BootstrapState
+      (IGameStateMachine stateMachine, IMonoEventsProvider monoEventsProvider, SceneLoader sceneLoader, GlobalService globalService) {
       _stateMachine = stateMachine;
       _monoEventsProvider = monoEventsProvider;
       _sceneLoader = sceneLoader;

@@ -163,11 +163,13 @@ namespace CodeBase.Infrastructure.Gameplay {
       return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
     }
 
-    private void Clear() {
+    public void Clear() {
       foreach (BoardTile tile in _tiles) {
         SetTileEmpty(tile);
       }
 
+      _searchFrontier.Clear();
+      _destinationPoints.Clear();
       _spawnPoints.Clear();
       _contentToUpdate.Clear();
       PlaceDestination(GetRandomEmptyTile(), true);

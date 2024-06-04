@@ -4,13 +4,19 @@ using CodeBase.Infrastructure.Services.StaticData.Player;
 
 namespace CodeBase.Infrastructure.Services.Player {
   public class PlayerService : IPlayerService {
+    private readonly IStaticDataService _staticDataService;
     public event Action<int> OnHealthChangedEvent = delegate {};
     public event Action<int> OnGoldChangedEvent = delegate {};
-    private readonly Health _health;
-    private readonly Currency _gold;
+    private Health _health;
+    private Currency _gold;
 
     public PlayerService(IStaticDataService staticDataService) {
-      PlayerStaticData playerStaticData = staticDataService.GetStaticData<PlayerStaticData>();
+      _staticDataService = staticDataService;
+      ResetValues();
+    }
+
+    public void ResetValues() {
+      PlayerStaticData playerStaticData = _staticDataService.GetStaticData<PlayerStaticData>();
       _health = new Health(playerStaticData.Health);
       _gold = new Currency(playerStaticData.Gold);
     }

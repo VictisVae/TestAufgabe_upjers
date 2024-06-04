@@ -10,5 +10,6 @@ namespace CodeBase.Infrastructure.Services.Player {
     event Action<int> OnGoldChangedEvent;
     void AddCurrency(int value);
     bool SpendCurrency(int value);
+    void ResetValues();
   }
 }

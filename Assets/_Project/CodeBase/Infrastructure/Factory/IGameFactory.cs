@@ -1,4 +1,5 @@
-﻿using CodeBase.BoardContent;
+﻿using System.Threading.Tasks;
+using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Pool;
 using CodeBase.Infrastructure.Services;
@@ -15,5 +16,7 @@ namespace CodeBase.Infrastructure.Factory {
     TurretBullet CreateBullet();
     void Reclaim(FactoryObject unit);
     void ReclaimBullet(TurretBullet bullet);
+    GameOverScreen CreateGameOverScreen();
+    Task Clear();
   }
 }

@@ -1,4 +1,5 @@
-﻿using CodeBase.BoardContent;
+﻿using System.Collections.Generic;
+using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.GameBoot;
 using CodeBase.Infrastructure.Gameplay;
@@ -8,6 +9,8 @@ using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.Random;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.UI;
+using CodeBase.Utilities;
+using UnityEngine;
 
 namespace CodeBase.Infrastructure.States {
   public class LoadLevelState : IPayloadState<string> {
@@ -19,6 +22,7 @@ namespace CodeBase.Infrastructure.States {
     private readonly IUnitSpawner _spawner;
     private readonly IPlayerService _playerService;
     private readonly IRandomService _randomService;
+    private List<MonoBehaviour> _clearData;
 
     public LoadLevelState
       (IInputService input, IMonoEventsProvider monoEventsProvider, IGameFactory gameFactory, IStaticDataService staticDataService,
@@ -36,12 +40,19 @@ namespace CodeBase.Infrastructure.States {
     public void Enter(string sceneName) =>
       _sceneLoader.Load(sceneName, OnLoaded);
 
-    public void Exit() {}
+    public void Exit() {
+      foreach (var data in _clearData) {
+        Object.Destroy(data.gameObject);
+      }
+    }
 
     private void OnLoaded() {
+      _clearData = new List<MonoBehaviour>();
       HUD hud = _gameFactory.CreateHUD();
       GameBoard gameBoard = CreateGameBoard();
-      ScenarioRunner scenarioRunner = ScenarioRunner(gameBoard, hud);
+      GameOverScreen gameOverScreen = _gameFactory.CreateGameOverScreen().With(x => x.Construct(_playerService, _spawner, gameBoard));
+
+      ScenarioRunner scenarioRunner = ScenarioRunner(gameBoard, hud, gameOverScreen);
 
       TileContentBuilder tileContentBuilder
         = new TileContentBuilder(_gameFactory, _input, _spawner, _staticDataService, _monoEventsProvider, gameBoard);
@@ -49,11 +60,14 @@ namespace CodeBase.Infrastructure.States {
       hud.Construct(_playerService, _staticDataService, tileContentBuilder, scenarioRunner);
       _spawner.Construct(gameBoard);
       gameBoard.Initialize(_staticDataService, _randomService, _gameFactory, _playerService);
+      _clearData.Add(hud);
+      _clearData.Add(gameBoard);
+      _clearData.Add(gameOverScreen);
     }
 
     private GameBoard CreateGameBoard() => _gameFactory.CreateGameBoard();
 
-    private ScenarioRunner ScenarioRunner
-      (GameBoard gameBoard, HUD hud) => new ScenarioRunner(_spawner, _monoEventsProvider, _staticDataService, _playerService, gameBoard, hud);
+    private ScenarioRunner ScenarioRunner(GameBoard gameBoard, HUD hud, GameOverScreen gameOverScreen) =>
+      new ScenarioRunner(_spawner, _monoEventsProvider, _staticDataService, _playerService, gameBoard, hud, gameOverScreen);
   }
 }

@@ -1,4 +1,6 @@
-﻿using CodeBase.BoardContent;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Pool;
 using CodeBase.Infrastructure.Services.AssetManagement;
@@ -18,7 +20,8 @@ namespace CodeBase.Infrastructure.Factory {
     private readonly IAsset _asset;
     private readonly IStaticDataService _staticDataService;
     private readonly IPlayerService _playerService;
-    private readonly TurretBulletPool _turretBulletPool;
+    private TurretBulletPool _turretBulletPool;
+    private List<Scene> _loadedScenes = new List<Scene>();
     private Scene _scene;
 
     public GameFactory(IAsset asset, IStaticDataService staticDataService, IPlayerService playerService) {
@@ -30,6 +33,7 @@ namespace CodeBase.Infrastructure.Factory {
 
     public GameBoard CreateGameBoard() => _asset.Initialize<GameBoard>(Constants.AssetsPath.GameBoard);
     public HUD CreateHUD() => _asset.Initialize<HUD>(Constants.AssetsPath.HUD);
+    public GameOverScreen CreateGameOverScreen() => _asset.Initialize<GameOverScreen>(Constants.AssetsPath.GameOverScreen);
 
     public Tower CreateTower(TowerType towerType) {
       TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(towerType);
@@ -40,7 +44,7 @@ namespace CodeBase.Infrastructure.Factory {
     }
 
     public TurretBullet CreateBullet() => _turretBulletPool.Get();
-    
+
     public TileContent Create(TileContentType type) {
       TileContent instance = CreateGameObjectInstance(_staticDataService.GetStaticData<TileContentStorage>().GetTileContent(type));
       instance.Construct(this);
@@ -72,9 +76,30 @@ namespace CodeBase.Infrastructure.Factory {
         }
       }
 
+      if (_loadedScenes.Contains(_scene) == false) {
+        _loadedScenes.Add(_scene);
+      }
+
       T instance = Object.Instantiate(prefab);
       SceneManager.MoveGameObjectToScene(instance.gameObject, _scene);
       return instance;
+    }
+
+    public async Task Clear() {
+      foreach (var scene in _loadedScenes) {
+        if (scene.isLoaded == false) {
+          continue;
+        }
+
+        var unloadOp = SceneManager.UnloadSceneAsync(scene);
+
+        while (unloadOp.isDone == false) {
+          await Task.Yield();
+        }
+      }
+
+      _turretBulletPool = new TurretBulletPool(InitBullet);
+      _loadedScenes.Clear();
     }
 
     private TurretBullet InitBullet() {
