@@ -9,6 +9,7 @@ namespace CodeBase.Infrastructure.Services.StaticData.UnitData {
     public UnitBase Prefab;
     [Range(10, 500)]
     public int Health;
+    public int Gold = 10;
     [FloatRangeSlider(0.5f, 2.0f)]
     public FloatRange Scale = new FloatRange(1.0f);
     [FloatRangeSlider(-0.4f, 0.4f)]

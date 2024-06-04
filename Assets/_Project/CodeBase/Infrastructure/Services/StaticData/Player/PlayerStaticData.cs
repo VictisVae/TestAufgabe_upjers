@@ -5,5 +5,6 @@ namespace CodeBase.Infrastructure.Services.StaticData.Player {
   public class PlayerStaticData : EntityStaticData {
     [Range(1, 100)]
     public int Health;
+    public int Gold;
   }
 }

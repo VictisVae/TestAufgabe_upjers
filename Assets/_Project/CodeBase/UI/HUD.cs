@@ -31,7 +31,9 @@ namespace CodeBase.UI {
       }
       
       _playerView.SetCurrentHealth(_playerService.Health);
+      _playerView.SetCurrentGold(_playerService.Gold);
       _playerService.OnHealthChangedEvent += _playerView.SetCurrentHealth;
+      _playerService.OnGoldChangedEvent += _playerView.SetCurrentGold;
       _waveRunner.SubscribeAction(RunFirstWave);
       _tileContentBuilder.RunEvents();
     }
@@ -46,6 +48,7 @@ namespace CodeBase.UI {
       }
 
       _playerService.OnHealthChangedEvent -= _playerView.SetCurrentHealth;
+      _playerService.OnGoldChangedEvent -= _playerView.SetCurrentGold;
       _waveRunner.UnsubscribeAll();
       _tileContentBuilder.StopEvents();
     }

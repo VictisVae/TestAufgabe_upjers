@@ -11,6 +11,7 @@ namespace CodeBase.Units {
       _unitMovement = new AirUnitMovement(transform, _model, config);
       _playerService = playerService;
       float scale = config.Scale.RandomValueInRange;
+      _bringsGold = config.Gold;
       _model.localScale = new Vector3(scale, scale, scale);
       Target.Construct(config.Health);
     }

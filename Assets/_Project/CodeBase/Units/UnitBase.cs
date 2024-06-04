@@ -15,8 +15,11 @@ namespace CodeBase.Units {
     protected IGameFactory _unitFactory;
     protected IPlayerService _playerService;
 
+    protected int _bringsGold;
+
     public override bool GameUpdate() {
       if (Target.IsAlive == false) {
+        _playerService.AddCurrency(_bringsGold);
         Recycle();
         return false;
       }
@@ -49,6 +52,7 @@ namespace CodeBase.Units {
       _unitFactory = factory;
       _unitMovement = new UnitMovement(transform, _model, config);
       float scale = config.Scale.RandomValueInRange;
+      _bringsGold = config.Gold;
       _model.localScale = new Vector3(scale, scale, scale);
       Target.Construct(config.Health);
     }

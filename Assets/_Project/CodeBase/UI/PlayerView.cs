@@ -9,5 +9,6 @@ namespace CodeBase.UI {
     [SerializeField]
     private TextMeshProUGUI _goldMesh;
     public void SetCurrentHealth(int value) => _healthMesh.text = value.ToString();
+    public void SetCurrentGold(int value) => _goldMesh.text = value.ToString();
   }
 }
