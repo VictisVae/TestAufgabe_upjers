@@ -9,14 +9,17 @@ namespace CodeBase.Units {
     public override void Construct(IGameFactory factory, IPlayerService playerService, UnitConfig config) {
       _unitFactory = factory;
       _unitMovement = new AirUnitMovement(transform, _model, config);
+      _playerService = playerService;
       float scale = config.Scale.RandomValueInRange;
       _model.localScale = new Vector3(scale, scale, scale);
+      Target.Construct(config.Health);
     }
 
     public override void Recycle() => _unitFactory.Reclaim(this);
 
     public void SpawnItOn(BoardTile spawnPoint, BoardTile destinationPoint) {
-      transform.localPosition = spawnPoint.transform.localPosition;
+      Vector3 transformLocalPosition = spawnPoint.transform.localPosition;
+      transform.localPosition = new Vector3(transformLocalPosition.x, transform.localPosition.y, transformLocalPosition.z) ;
       _unitMovement.SetDirectionTiles(spawnPoint, destinationPoint);
       _unitMovement.PrepareIntro();
     }

@@ -7,7 +7,7 @@ namespace CodeBase.Units {
 
     public void Add(UnitBase unit) {
       _behaviours.Add(unit);
-      Targets.Add(unit.TargetPoint);
+      Targets.Add(unit.Target);
     }
 
     public void GameUpdate() {
@@ -32,6 +32,6 @@ namespace CodeBase.Units {
     }
 
     public bool IsEmpty => _behaviours.Count == 0;
-    public List<TargetPoint> Targets { get; } = new List<TargetPoint>();
+    public List<Target> Targets { get; } = new List<Target>();
   }
 }

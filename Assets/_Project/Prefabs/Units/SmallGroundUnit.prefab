@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1876395382586757633}
   - component: {fileID: 5661853808802182518}
-  - component: {fileID: 6577502509099417245}
+  - component: {fileID: -6014822372756852418}
   m_Layer: 0
   m_Name: SmallGroundUnit
   m_TagString: Untagged
@@ -162,7 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _model: {fileID: 4547695695968325836}
---- !u!114 &6577502509099417245
+  <Target>k__BackingField: {fileID: -6014822372756852418}
+--- !u!114 &-6014822372756852418
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

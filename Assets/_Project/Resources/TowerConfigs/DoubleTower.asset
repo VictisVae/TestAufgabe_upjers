@@ -15,4 +15,6 @@ MonoBehaviour:
   ContentType: 4
   BuildScheme:
     _towerType: 1
+  ShootFrequency: 0.4
+  BulletDamage: 2
   Prefab: {fileID: 3207852529346731881, guid: f370936b6318fef45a928eaf5c54f45e, type: 3}

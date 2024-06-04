@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ContentType: 4
   BuildScheme:
-    _towerType: 3
+    _towerType: 2
+  ShootFrequency: 0.1
+  BulletDamage: 3
   Prefab: {fileID: 3207852529346731881, guid: ef46747390faa194ab83cb2714fdbda4, type: 3}

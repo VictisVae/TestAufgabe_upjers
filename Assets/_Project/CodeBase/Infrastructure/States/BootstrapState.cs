@@ -4,6 +4,7 @@ using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.AssetManagement;
 using CodeBase.Infrastructure.Services.Input;
+using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.Random;
 using CodeBase.Infrastructure.Services.StaticData;
@@ -12,11 +13,13 @@ using CodeBase.Utilities;
 namespace CodeBase.Infrastructure.States {
   public class BootstrapState : IState {
     private readonly IGameStateMachine _stateMachine;
+    private readonly IMonoEventsProvider _monoEventsProvider;
     private readonly SceneLoader _sceneLoader;
     private readonly GlobalService _globalService;
 
-    public BootstrapState(IGameStateMachine stateMachine, SceneLoader sceneLoader, GlobalService globalService) {
+    public BootstrapState(IGameStateMachine stateMachine, IMonoEventsProvider monoEventsProvider, SceneLoader sceneLoader, GlobalService globalService) {
       _stateMachine = stateMachine;
+      _monoEventsProvider = monoEventsProvider;
       _sceneLoader = sceneLoader;
       _globalService = globalService;
       RegisterServices();
@@ -30,6 +33,7 @@ namespace CodeBase.Infrastructure.States {
       _globalService.RegisterSingle(_stateMachine);
       _globalService.RegisterSingle<IAsset>(new AssetProvider());
       _globalService.RegisterSingle<IPlayerService>(new PlayerService(_globalService.GetSingle<IStaticDataService>()));
+      _globalService.RegisterSingle(_monoEventsProvider);
 
       _globalService.RegisterSingle<IGameFactory>(new GameFactory(_globalService.GetSingle<IAsset>(), _globalService.GetSingle<IStaticDataService>(),
         _globalService.GetSingle<IPlayerService>()));

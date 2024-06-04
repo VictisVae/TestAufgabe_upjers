@@ -86,7 +86,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       FindPathsSuccessful();
     }
 
-    public void PlaceTower(BoardTile[] tiles, TowerType type, Func<List<TargetPoint>> targets) {
+    public void PlaceTower(BoardTile[] tiles, TowerType type, Func<List<Target>> targets) {
       BoardTile placementTile = tiles[0];
 
       foreach (BoardTile occupiedTile in tiles) {

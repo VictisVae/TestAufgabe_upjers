@@ -9,6 +9,7 @@ namespace CodeBase.Units {
   public class UnitMovement {
     protected readonly Transform _unitTransform;
     protected readonly float _speed;
+    protected float _progress;
     private readonly Transform _modelTransform;
     private readonly float _pathOffset;
     protected Vector3 _positionFrom, _positionTo;
@@ -17,7 +18,6 @@ namespace CodeBase.Units {
     private Direction _direction;
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
-    private float _progress;
 
     public UnitMovement(Transform unitTransform, Transform modelTransform, UnitConfig config) {
       _unitTransform = unitTransform;
@@ -61,7 +61,7 @@ namespace CodeBase.Units {
     }
 
     public void UpdateProgress() => _progress += Time.deltaTime * _progressFactor;
-    public Vector3 GetSmoothMovement() => Vector3.LerpUnclamped(_positionFrom, _positionTo, _progress);
+    public virtual Vector3 GetSmoothMovement() => Vector3.LerpUnclamped(_positionFrom, _positionTo, _progress);
     public Quaternion GetSmoothRotation() => Quaternion.Euler(0.0f, SmoothAngle, 0.0f);
     public void NullifyMovement() => _progress = (_progress - 1.0f) / _progressFactor;
     public void MultiplyProgress() => _progress *= _progressFactor;

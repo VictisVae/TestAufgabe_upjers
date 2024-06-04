@@ -8,7 +8,7 @@ namespace CodeBase.BoardContent {
     private MeshRenderer _meshRenderer;
     [SerializeField]
     private TileContentType _type;
-    private IGameFactory _gameFactory;
+    protected IGameFactory _gameFactory;
     private Tower _occupationTower;
 
     public virtual void ViewAvailable(bool isAvailable) {

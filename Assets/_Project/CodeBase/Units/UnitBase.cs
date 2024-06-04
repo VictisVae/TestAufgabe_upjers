@@ -9,20 +9,18 @@ namespace CodeBase.Units {
   public abstract class UnitBase : GameBehaviour {
     [SerializeField]
     protected Transform _model;
+    [field: SerializeField]
+    public Target Target { get; private set; }
     protected UnitMovement _unitMovement;
     protected IGameFactory _unitFactory;
-    private IPlayerService _playerService;
-    private void Awake() => TargetPoint = GetComponent<TargetPoint>();
-
-    public virtual void Construct(IGameFactory factory, IPlayerService playerService, UnitConfig config) {
-      _playerService = playerService;
-      _unitFactory = factory;
-      _unitMovement = new UnitMovement(transform, _model, config);
-      float scale = config.Scale.RandomValueInRange;
-      _model.localScale = new Vector3(scale, scale, scale);
-    }
+    protected IPlayerService _playerService;
 
     public override bool GameUpdate() {
+      if (Target.IsAlive == false) {
+        Recycle();
+        return false;
+      }
+
       _unitMovement.UpdateProgress();
 
       while (_unitMovement.IsProgressExists) {
@@ -46,12 +44,19 @@ namespace CodeBase.Units {
       return true;
     }
 
+    public virtual void Construct(IGameFactory factory, IPlayerService playerService, UnitConfig config) {
+      _playerService = playerService;
+      _unitFactory = factory;
+      _unitMovement = new UnitMovement(transform, _model, config);
+      float scale = config.Scale.RandomValueInRange;
+      _model.localScale = new Vector3(scale, scale, scale);
+      Target.Construct(config.Health);
+    }
+
     public void SpawnItOn(BoardTile spawnPoint) {
       transform.localPosition = spawnPoint.transform.localPosition;
       _unitMovement.SetDirectionTiles(spawnPoint, spawnPoint.NextTileOnOnPath);
       _unitMovement.PrepareIntro();
     }
-
-    public TargetPoint TargetPoint { get; private set; }
   }
 }

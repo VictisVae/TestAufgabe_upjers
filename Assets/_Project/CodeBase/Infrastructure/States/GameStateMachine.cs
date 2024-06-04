@@ -16,7 +16,7 @@ namespace CodeBase.Infrastructure.States {
 
     public GameStateMachine(SceneLoader sceneLoader, GlobalService globalService, IMonoEventsProvider monoEventsProvider) =>
       _states = new Dictionary<Type, IExitState> {
-        [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, globalService),
+        [typeof(BootstrapState)] = new BootstrapState(this, monoEventsProvider, sceneLoader, globalService),
         [typeof(LoadLevelState)] = new LoadLevelState(globalService.GetSingle<IInputService>(), monoEventsProvider,
           globalService.GetSingle<IGameFactory>(), globalService.GetSingle<IStaticDataService>(), globalService.GetSingle<IUnitSpawner>(),
           globalService.GetSingle<IPlayerService>(), sceneLoader)

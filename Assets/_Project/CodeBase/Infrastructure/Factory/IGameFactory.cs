@@ -1,5 +1,6 @@
 ﻿using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
+using CodeBase.Infrastructure.Pool;
 using CodeBase.Infrastructure.Services;
 using CodeBase.UI;
 using CodeBase.Units;
@@ -10,7 +11,9 @@ namespace CodeBase.Infrastructure.Factory {
     GameBoard CreateGameBoard();
     TileContent Create(TileContentType type);
     UnitBase Create(UnitType type);
-    void Reclaim(FactoryObject unit);
     Tower CreateTower(TowerType towerType);
+    TurretBullet CreateBullet();
+    void Reclaim(FactoryObject unit);
+    void ReclaimBullet(TurretBullet bullet);
   }
 }
