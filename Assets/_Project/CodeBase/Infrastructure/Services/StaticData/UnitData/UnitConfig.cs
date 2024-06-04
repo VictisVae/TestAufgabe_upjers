@@ -10,7 +10,7 @@ namespace CodeBase.Infrastructure.Services.StaticData.UnitData {
     [Range(10, 500)]
     public int Health;
     public int Gold = 10;
-    [FloatRangeSlider(0.5f, 2.0f)]
+    [FloatRangeSlider(0.1f, 2.0f)]
     public FloatRange Scale = new FloatRange(1.0f);
     [FloatRangeSlider(-0.4f, 0.4f)]
     public FloatRange PathOffset = new FloatRange(0.0f);

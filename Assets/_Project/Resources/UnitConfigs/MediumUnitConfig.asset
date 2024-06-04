@@ -17,8 +17,8 @@ MonoBehaviour:
   Health: 100
   Gold: 15
   Scale:
-    _min: 1
-    _max: 1.2
+    _min: 0.7
+    _max: 1
   PathOffset:
     _min: -0.1
     _max: 0.1
