@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnSequences:
   - _type: 2
-    _amount: 8
-    _cooldown: 2
+    _amount: 12
+    _cooldown: 3
   - _type: 1
-    _amount: 4
+    _amount: 6
     _cooldown: 4
   - _type: 2
     _amount: 12

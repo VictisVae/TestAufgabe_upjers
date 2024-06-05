@@ -24,6 +24,8 @@ namespace CodeBase.Infrastructure.States {
     private readonly IRandomService _randomService;
     private List<MonoBehaviour> _clearData;
 
+    private bool _alreadyWelcomed;
+
     public LoadLevelState
       (IInputService input, IMonoEventsProvider monoEventsProvider, IGameFactory gameFactory, IStaticDataService staticDataService,
         IUnitSpawner spawner, IPlayerService playerService, IRandomService randomService, SceneLoader sceneLoader) {
@@ -47,6 +49,11 @@ namespace CodeBase.Infrastructure.States {
     }
 
     private void OnLoaded() {
+      if (_alreadyWelcomed == false) {
+        _alreadyWelcomed = true;
+        _gameFactory.CreateWelcomeScreen();
+      }
+      
       _clearData = new List<MonoBehaviour>();
       HUD hud = _gameFactory.CreateHUD();
       GameBoard gameBoard = CreateGameBoard();

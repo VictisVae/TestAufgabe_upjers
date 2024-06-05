@@ -27,7 +27,7 @@ MonoBehaviour:
     _cooldown: 4
   - _type: 3
     _amount: 4
-    _cooldown: 4
+    _cooldown: 2
   - _type: 0
-    _amount: 1
-    _cooldown: 4
+    _amount: 2
+    _cooldown: 6

@@ -189,7 +189,7 @@ namespace CodeBase.BoardContent {
     }
 
     private void PlaceDestination() {
-      if (_board.DestinationPointCount >= 4) {
+      if (_board.DestinationPointCount >= 5) {
         return;
       }
       

@@ -7,6 +7,7 @@
       public const string GameBoard = nameof(GameBoard);
       public const string HUD = nameof(HUD);
       public const string GameOverScreen = nameof(GameOverScreen);
+      public const string WelcomeScreen = nameof(WelcomeScreen);
     }
 
     public class ResourcesPath {

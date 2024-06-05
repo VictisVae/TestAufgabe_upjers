@@ -19,5 +19,6 @@ namespace CodeBase.Infrastructure.Factory {
     void ReclaimBullet(TurretBullet bullet);
     GameOverScreen CreateGameOverScreen();
     Task Clear();
+    WelcomeScreen CreateWelcomeScreen();
   }
 }

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DestinationTile
   m_EditorClassIdentifier: 
   Type: 1
-  Prefab: {fileID: 6007436895934908530, guid: d475cba94cc62e740877baed1de450e4, type: 3}
+  Prefab: {fileID: 3359018704842339231, guid: d475cba94cc62e740877baed1de450e4, type: 3}
   BringsGold: 1
-  GoldValue: 200
+  GoldValue: 100
+  IsLimited: 1
+  Limit: 5

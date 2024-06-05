@@ -31,6 +31,7 @@ namespace CodeBase.UI {
       foreach (TileBuildingButtonData tileBuildingButton in _tileBuildingButtons) {
         var config = tileStorage.GetTileConfig(tileBuildingButton.Type);
         tileBuildingButton.SetBuildValue(config.GoldValue, config.BringsGold, _playerService.Gold);
+        tileBuildingButton.SetLimit(config.IsLimited, config.Limit);
         tileBuildingButton.Button.AddListener(() => BuildTile(tileBuildingButton.Type));
         _playerService.OnGoldChangedEvent += tileBuildingButton.UpdateButtonAvailability;
       }

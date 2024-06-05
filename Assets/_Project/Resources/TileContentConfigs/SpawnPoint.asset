@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SpawnPoint
   m_EditorClassIdentifier: 
   Type: 3
-  Prefab: {fileID: 1099447984023700682, guid: bdbff0f2cf54a404f93c1a4c7d4c0bed, type: 3}
+  Prefab: {fileID: 6293153118719891590, guid: bdbff0f2cf54a404f93c1a4c7d4c0bed, type: 3}
   BringsGold: 1
   GoldValue: 200
+  IsLimited: 1
+  Limit: 5

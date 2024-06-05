@@ -35,6 +35,7 @@ namespace CodeBase.Infrastructure.Factory {
     public GameBoard CreateGameBoard() => _asset.Initialize<GameBoard>(Constants.AssetsPath.GameBoard);
     public HUD CreateHUD() => _asset.Initialize<HUD>(Constants.AssetsPath.HUD);
     public GameOverScreen CreateGameOverScreen() => _asset.Initialize<GameOverScreen>(Constants.AssetsPath.GameOverScreen);
+    public WelcomeScreen CreateWelcomeScreen() => _asset.Initialize<WelcomeScreen>(Constants.AssetsPath.WelcomeScreen);
 
     public Tower.Tower CreateTower(TowerType towerType) {
       TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(towerType);

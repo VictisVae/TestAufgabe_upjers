@@ -12,8 +12,8 @@ namespace CodeBase.UI {
     [SerializeField]
     private TextMeshProUGUI _goldMesh;
 
-    private bool _bringsGold;
-    private int _costValue;
+    protected bool _bringsGold;
+    protected int _costValue;
 
     public void SetBuildValue(int costValue, bool bringsGold, int playerGold) {
       _costValue = costValue;
@@ -23,7 +23,7 @@ namespace CodeBase.UI {
       UpdateButtonAvailability(playerGold);
     }
 
-    public void UpdateButtonAvailability(int playerGold) {
+    public virtual void UpdateButtonAvailability(int playerGold) {
       if (playerGold < _costValue && _bringsGold == false) {
         Button.interactable = false;
         return;
