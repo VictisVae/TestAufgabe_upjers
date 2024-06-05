@@ -21,7 +21,6 @@ namespace CodeBase.Infrastructure.Factory {
     private readonly IAsset _asset;
     private readonly IStaticDataService _staticDataService;
     private readonly IPlayerService _playerService;
-    private TurretBulletPool _turretBulletPool;
     private List<Scene> _loadedScenes = new List<Scene>();
     private Scene _scene;
 
@@ -29,7 +28,6 @@ namespace CodeBase.Infrastructure.Factory {
       _asset = asset;
       _staticDataService = staticDataService;
       _playerService = playerService;
-      _turretBulletPool = new TurretBulletPool(InitBullet);
     }
 
     public GameBoard CreateGameBoard() => _asset.Initialize<GameBoard>(Constants.AssetsPath.GameBoard);
@@ -44,9 +42,7 @@ namespace CodeBase.Infrastructure.Factory {
       instance.Construct(this);
       return instance;
     }
-
-    public TurretBullet CreateBullet() => _turretBulletPool.Get();
-
+    
     public TileContent Create(TileContentType type) {
       TileContent instance = CreateGameObjectInstance(_staticDataService.GetStaticData<TileContentStorage>().GetTileContent(type));
       instance.Construct(this);
@@ -61,7 +57,6 @@ namespace CodeBase.Infrastructure.Factory {
     }
 
     public void Reclaim(FactoryObject unit) => Object.Destroy(unit.gameObject);
-    public void ReclaimBullet(TurretBullet bullet) => _turretBulletPool.Return(bullet);
 
     private T CreateGameObjectInstance<T>(T prefab) where T : MonoBehaviour {
       string sceneName = prefab.GetType().Name;
@@ -100,13 +95,7 @@ namespace CodeBase.Infrastructure.Factory {
         }
       }
 
-      _turretBulletPool = new TurretBulletPool(InitBullet);
       _loadedScenes.Clear();
-    }
-
-    private TurretBullet InitBullet() {
-      TurretBulletData turretBulletData = _staticDataService.GetStaticData<TurretBulletData>();
-      return CreateGameObjectInstance(turretBulletData.Prefab).With(x => x.SetBulletSpeed(turretBulletData.Speed));
     }
   }
 }

@@ -16,6 +16,6 @@ MonoBehaviour:
   BuildScheme:
     _towerType: 0
   ShootFrequency: 0.5
-  BulletDamage: 1
+  LaserDamage: 2
   GoldValue: 30
   Prefab: {fileID: 3207852529346731881, guid: 2b3273bdf6130504c881fbff7f669e36, type: 3}
