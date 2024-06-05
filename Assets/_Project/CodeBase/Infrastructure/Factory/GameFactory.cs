@@ -9,6 +9,7 @@ using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.TileContentData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
+using CodeBase.Tower;
 using CodeBase.UI;
 using CodeBase.Units;
 using CodeBase.Utilities;
@@ -35,9 +36,9 @@ namespace CodeBase.Infrastructure.Factory {
     public HUD CreateHUD() => _asset.Initialize<HUD>(Constants.AssetsPath.HUD);
     public GameOverScreen CreateGameOverScreen() => _asset.Initialize<GameOverScreen>(Constants.AssetsPath.GameOverScreen);
 
-    public Tower CreateTower(TowerType towerType) {
+    public Tower.Tower CreateTower(TowerType towerType) {
       TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(towerType);
-      Tower instance = CreateGameObjectInstance(towerConfig.Prefab);
+      Tower.Tower instance = CreateGameObjectInstance(towerConfig.Prefab);
       instance.Construct(towerConfig);
       instance.Construct(this);
       return instance;

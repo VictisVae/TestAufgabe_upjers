@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Pool;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
-using CodeBase.TowerBehaviour;
 using UnityEngine;
 
-namespace CodeBase.BoardContent {
+namespace CodeBase.Tower {
   [RequireComponent(typeof(TowerVisualRadius))]
   public class Tower : TileContent {
-    private TowerVisualRadius _towerRadius;
+    [SerializeField]
+    private TowerRecolor _towerRecolor;
     [SerializeField]
     private Transform _turretPlatform;
     [SerializeField]
@@ -18,24 +19,35 @@ namespace CodeBase.BoardContent {
     [SerializeField]
     [Range(1f, 10f)]
     private float _targetingRange = 1.5f;
+    private TowerVisualRadius _towerRadius;
+    private Func<List<Target>> _targets;
+    private Target _target;
     private float _reloadTime;
     private float _shootFrequency;
     private int _damage;
-    private Func<List<Target>> _targets;
-    private Target _target;
-
     private void Awake() => _towerRadius = GetComponent<TowerVisualRadius>();
-
-    public void Construct(TowerConfig config) {
-      _shootFrequency = config.ShootFrequency;
-      _damage = config.BulletDamage;
-      TowerType = config.BuildScheme.TowerType;
-    }
 
     public override void GameUpdate() {
       if (IsTargetTracked() || IsTargetAcquired()) {
         Shoot();
       }
+    }
+
+    public override void ViewAvailable(bool isAvailable) {
+      _towerRecolor.ViewAvailable(isAvailable);
+      _towerRadius.SwitchRadiusColor(isAvailable ? new Color(0, 1, 0, 0.3f) : new Color(1, 0, 0, 0.3f));
+    }
+
+    public override void SetNormal() {
+      _towerRecolor.SetNormal();
+      _towerRadius.ResetRadiusColor();
+    }
+
+    public void Construct(TowerConfig config) {
+      _shootFrequency = config.ShootFrequency;
+      _damage = config.BulletDamage;
+      TowerType = config.BuildScheme.TowerType;
+      _towerRecolor.SetTileType(_type);
     }
 
     public void ReceiveTargets(Func<List<Target>> targets) => _targets = targets;

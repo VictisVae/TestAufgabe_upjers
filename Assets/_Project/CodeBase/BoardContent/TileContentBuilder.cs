@@ -5,6 +5,7 @@ using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
+using CodeBase.Tower;
 using CodeBase.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -44,7 +45,7 @@ namespace CodeBase.BoardContent {
 
       Plane ground = new Plane(Vector3.up, Vector3.zero);
       Ray ray = TouchRay;
-
+      
       if (ground.Raycast(ray, out float position)) {
         Vector3 worldPosition = ray.GetPoint(position);
         worldPosition.y += 0.1f;
@@ -62,7 +63,7 @@ namespace CodeBase.BoardContent {
         _placementOnClick();
       }
     }
-
+    
     private void TrySellTileContent() {
       if (_input.MouseButtonDown(0) == false) {
         return;

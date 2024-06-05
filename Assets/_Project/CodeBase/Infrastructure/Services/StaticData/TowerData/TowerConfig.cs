@@ -1,4 +1,5 @@
 ﻿using CodeBase.BoardContent;
+using CodeBase.Tower;
 using UnityEngine;
 
 namespace CodeBase.Infrastructure.Services.StaticData.TowerData {
@@ -11,6 +12,6 @@ namespace CodeBase.Infrastructure.Services.StaticData.TowerData {
     [Range(1, 50)]
     public int BulletDamage;
     public int GoldValue;
-    public Tower Prefab;
+    public Tower.Tower Prefab;
   }
 }

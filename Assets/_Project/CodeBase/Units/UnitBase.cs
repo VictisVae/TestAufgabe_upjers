@@ -2,7 +2,7 @@
 using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
-using CodeBase.TowerBehaviour;
+using CodeBase.Tower;
 using UnityEngine;
 
 namespace CodeBase.Units {

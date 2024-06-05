@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CodeBase.TowerBehaviour;
+using CodeBase.Tower;
 
 namespace CodeBase.Units {
   public class BehavioursCollection {

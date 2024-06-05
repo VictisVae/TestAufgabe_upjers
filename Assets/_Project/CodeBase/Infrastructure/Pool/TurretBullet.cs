@@ -1,7 +1,7 @@
 ﻿using System;
 using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.MonoEvents;
-using CodeBase.TowerBehaviour;
+using CodeBase.Tower;
 using CodeBase.Utilities;
 using UnityEngine;
 
