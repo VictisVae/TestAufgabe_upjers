@@ -683,8 +683,10 @@ MonoBehaviour:
     through. This can be done even while they are in motion.\n2. Place Towers: Towers
     can only be placed on ground tiles.\n3. High Risk, High Reward: Adding new spawn
     points and destination points can be risky, as their placement is completely
-    random, but it will bring you extra gold.\n4. Enjoy the Gameplay: Dive in and
-    have fun!\n\tI hope you enjoy the experience!"
+    random, but it will bring you extra gold.\n4. Sell Ground and Towers: Improve
+    your defensive strategy by selling ground tiles and towers. Simply click on them
+    again to sell.\n5. Enjoy the Gameplay: Dive in and have fun!\nI hope you enjoy
+    the experience!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -711,8 +713,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29
-  m_fontSizeBase: 29
+  m_fontSize: 26.78
+  m_fontSizeBase: 26.78
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
