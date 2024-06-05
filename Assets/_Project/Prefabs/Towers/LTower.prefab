@@ -235,7 +235,7 @@ MonoBehaviour:
   - {fileID: 2665977824258399868}
   - {fileID: 8930019721920715251}
   - {fileID: 2808622323147260807}
-  _targetingRange: 5
+  _targetingRange: 3
 --- !u!114 &2961669372598924822
 MonoBehaviour:
   m_ObjectHideFlags: 0
