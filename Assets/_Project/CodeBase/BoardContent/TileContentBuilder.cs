@@ -8,7 +8,6 @@ using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using CodeBase.Tower;
 using CodeBase.Utilities;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace CodeBase.BoardContent {
   public class TileContentBuilder {
@@ -23,7 +22,10 @@ namespace CodeBase.BoardContent {
     private TowerType _currentTowerType = TowerType.Simple;
     private Func<bool> _placementAvailable;
     private Action _placementOnClick = delegate {};
+    private Vector3 _movementVelocity = Vector3.zero;
+    private float _dampingFactor = 0.075f;
     private bool _flyingBuildingAllowed;
+    private bool _readyToBePlaced;
 
     public TileContentBuilder
       (IGameFactory gameFactory, IInputService input, IUnitSpawner unitSpawner, IStaticDataService staticDataService,
@@ -45,25 +47,38 @@ namespace CodeBase.BoardContent {
 
       Plane ground = new Plane(Vector3.up, Vector3.zero);
       Ray ray = TouchRay;
-      
+
       if (ground.Raycast(ray, out float position)) {
+        if (_input.MouseButtonDown(0)) {
+          _flyingTileContent.gameObject.Enable();
+        }
+
         Vector3 worldPosition = ray.GetPoint(position);
         worldPosition.y += 0.1f;
-        _flyingTileContent.transform.position = worldPosition;
+        Vector3 currentPosition = _flyingTileContent.transform.position;
+
+        if (Vector3.SqrMagnitude(currentPosition - worldPosition) > 0.01f) {
+          currentPosition = Vector3.SmoothDamp(currentPosition, worldPosition, ref _movementVelocity, _dampingFactor);
+          _flyingTileContent.transform.position = currentPosition;
+        } else {
+          _movementVelocity = Vector3.zero;
+        }
+
+        _readyToBePlaced = Vector3.Distance(_flyingTileContent.transform.position, worldPosition) <= 1.0f;
       }
 
       bool isAvailable = _placementAvailable.Invoke();
       _flyingTileContent.ViewAvailable(isAvailable);
 
-      if (isAvailable && _input.MouseButtonDown(0)) {
+      if (isAvailable && _readyToBePlaced && _input.MouseButtonDown(0)) {
         _flyingTileContent.SetNormal();
-        Object.Destroy(_flyingTileContent.gameObject);
+        _flyingTileContent.Recycle();
         _flyingTileContent = null;
         RestrictFlyingBuilding();
         _placementOnClick();
       }
     }
-    
+
     private void TrySellTileContent() {
       if (_input.MouseButtonDown(0) == false) {
         return;
@@ -74,7 +89,7 @@ namespace CodeBase.BoardContent {
       }
 
       BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      
+
       if (tile.Content.IsOccupied) {
         SellTower(tile);
         return;
@@ -92,10 +107,16 @@ namespace CodeBase.BoardContent {
     public void StartPlacingContent(TileContentType type) {
       if (type == TileContentType.Ground) {
         if (_flyingTileContent != null) {
-          Object.Destroy(_flyingTileContent.gameObject);
+          _flyingTileContent.Recycle();
         }
 
+        _movementVelocity = Vector3.zero;
         _flyingTileContent = _gameFactory.Create(type);
+
+        if (Application.isMobilePlatform) {
+          _flyingTileContent.gameObject.Disable();
+        }
+
         _placementAvailable = IsTilePlacementPossible;
         _placementOnClick = PlacementOnClick(type);
         return;
@@ -107,11 +128,17 @@ namespace CodeBase.BoardContent {
 
     public void StartPlacingContent(TowerType towerType) {
       if (_flyingTileContent != null) {
-        Object.Destroy(_flyingTileContent.gameObject);
+        _flyingTileContent.Recycle();
       }
 
+      _movementVelocity = Vector3.zero;
       _currentTowerType = towerType;
       _flyingTileContent = _gameFactory.CreateTower(towerType).With(x => x.ShowRadius());
+      
+      if (Application.isMobilePlatform) {
+        _flyingTileContent.gameObject.Disable();
+      }
+
       _placementAvailable = IsTowerPlacementPossible;
       _placementOnClick = PlaceTower;
     }
@@ -183,7 +210,7 @@ namespace CodeBase.BoardContent {
       if (_board.SpawnPointCount >= 5) {
         return;
       }
-      
+
       BoardTile tile = _board.GetRandomEmptyTile();
       _board.PlaceSpawnPoint(tile);
     }
@@ -192,7 +219,7 @@ namespace CodeBase.BoardContent {
       if (_board.DestinationPointCount >= 5) {
         return;
       }
-      
+
       BoardTile tile = _board.GetRandomEmptyTile();
       _board.PlaceDestination(tile);
     }
