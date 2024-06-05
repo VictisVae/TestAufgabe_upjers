@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 595b0474208146f8a91929e03b96a2be, type: 3}
+  m_Name: BoardConfig
+  m_EditorClassIdentifier: 
+  BoardTilePrefab: {fileID: 3964268486969816335, guid: fe85932a9f20cfc4ea90b3b09c2bf940,
+    type: 3}
+  BoardSize: {x: 17, y: 17}

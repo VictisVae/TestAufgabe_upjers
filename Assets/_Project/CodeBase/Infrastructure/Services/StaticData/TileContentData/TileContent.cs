@@ -1,0 +1,14 @@
+﻿using CodeBase.BoardContent;
+using UnityEngine;
+
+namespace CodeBase.Infrastructure.Services.StaticData.TileContentData {
+  [CreateAssetMenu]
+  public class TileContentConfig : ScriptableObject {
+    public TileContentType Type;
+    public TileContent Prefab;
+    public bool BringsGold;
+    public int GoldValue;
+    public bool IsLimited;
+    public int Limit;
+  }
+}

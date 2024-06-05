@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f1b78db36ae48e598dfbb1e9b636328, type: 3}
+  m_Name: MediumUnitConfig
+  m_EditorClassIdentifier: 
+  Type: 1
+  Prefab: {fileID: 2214460684964403632, guid: b81018e7b0898324a950cdc524559e7a, type: 3}
+  Health: 100
+  Gold: 15
+  Scale:
+    _min: 0.7
+    _max: 1
+  PathOffset:
+    _min: -0.1
+    _max: 0.1
+  Speed:
+    _min: 1
+    _max: 2
