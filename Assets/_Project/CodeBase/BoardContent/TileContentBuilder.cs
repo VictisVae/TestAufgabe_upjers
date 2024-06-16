@@ -18,7 +18,7 @@ namespace CodeBase.BoardContent {
     private readonly IMonoEventsProvider _monoEventsProvider;
     private readonly Camera _camera;
     private readonly GameBoard _board;
-    private TileContent _flyingTileContent;
+    private FactoryObject _flyingTileContent;
     private TowerType _currentTowerType = TowerType.Simple;
     private Func<bool> _placementAvailable;
     private Action _placementOnClick = delegate {};

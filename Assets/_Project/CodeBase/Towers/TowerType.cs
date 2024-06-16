@@ -4,5 +4,6 @@
     Double,
     LTower,
     UTower,
+    Null
   }
 }

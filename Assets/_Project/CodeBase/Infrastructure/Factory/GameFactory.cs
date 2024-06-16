@@ -73,8 +73,7 @@ namespace CodeBase.Infrastructure.Factory {
     public Tower CreateTower(TowerType towerType) {
       TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(towerType);
       Tower instance = _towerPoolMap[towerType].Get();
-      instance.Construct(towerConfig);
-      instance.Construct(this);
+      instance.Construct(this ,towerConfig);
       return instance;
     }
 

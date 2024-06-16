@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using CodeBase.BoardContent;
+using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using CodeBase.Towers.Armory;
 using UnityEngine;
 
 namespace CodeBase.Towers {
   [RequireComponent(typeof(TowerVisualRadius))]
-  public class Tower : TileContent {
+  public class Tower : FactoryObject, ITower {
     [SerializeField]
     private TowerRecolor _towerRecolor;
     [SerializeField]
@@ -16,13 +17,16 @@ namespace CodeBase.Towers {
     [Range(1f, 10f)]
     private float _targetingRange = 1.5f;
     private TowerVisualRadius _towerRadius;
+    private IGameFactory _gameFactory;
     private void Awake() => _towerRadius = GetComponent<TowerVisualRadius>();
 
-    public override void GameUpdate() {
+    public void GameUpdate() {
       if (_towerLaser.IsTargetAcquired() || _towerLaser.IsTargetTracked()) {
         _towerLaser.Shoot();
       }
     }
+
+    public TowerType TowerType { get; private set; }
 
     public override void ViewAvailable(bool isAvailable) {
       _towerRecolor.ViewAvailable(isAvailable);
@@ -34,17 +38,16 @@ namespace CodeBase.Towers {
       _towerRadius.ResetRadiusColor();
     }
 
-    public void Construct(TowerConfig config) {
+    public void Construct(IGameFactory gameFactory, TowerConfig config) {
+      _gameFactory = gameFactory;
       _towerLaser.Construct(config.ShootFrequency, config.LaserDamage, _targetingRange);
       TowerType = config.BuildScheme.TowerType;
-      _towerRecolor.SetTileType(_type);
     }
     
     public override void Recycle() => _gameFactory.Reclaim(this, TowerType);
     public void ShowRadius() => _towerRadius.ShowRadius();
     public void HideRadius() => _towerRadius.HideRadius();
     public void ReceiveTargets(Func<List<Target>> targets) => _towerLaser.ReceiveTargets(targets);
-    public new TowerType TowerType { get; private set; }
     public float TargetingRange => _targetingRange;
   }
 }

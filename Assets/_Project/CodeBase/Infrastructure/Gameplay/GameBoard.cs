@@ -77,6 +77,7 @@ namespace CodeBase.Infrastructure.Gameplay {
 
       if (FindPathsSuccessful()) {
         _playerService.SpendCurrency(_staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.Ground).GoldValue);
+        _contentToUpdate.Add(tile.Content);
         return;
       }
 
@@ -89,6 +90,7 @@ namespace CodeBase.Infrastructure.Gameplay {
         return;
       }
 
+      _contentToUpdate.Remove(tile.Content);
       SetTileEmpty(tile);
       FindPathsSuccessful();
       TileContentConfig config = _staticDataService.GetStaticData<TileContentStorage>().GetTileConfig(TileContentType.Ground);
@@ -111,19 +113,16 @@ namespace CodeBase.Infrastructure.Gameplay {
       }
 
       _playerService.SpendCurrency(_staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(type).GoldValue);
-      _contentToUpdate.Add(tower);
     }
 
     public void RemoveTower(BoardTile tile) {
       TowerConfig config = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(tile.Content.TowerType);
       BoardTile[] occupiedTiles = tile.GetOccupied();
-      _contentToUpdate.Remove(tile.Content.OccupationTower);
       tile.Content.OccupationTower.Recycle();
 
       foreach (BoardTile occupiedTile in occupiedTiles) {
         occupiedTile.Content.ClearOccupation();
         occupiedTile.ClearOccupation();
-        SetTileGround(occupiedTile);
       }
 
       _playerService.AddCurrency(config.GoldValue);
