@@ -8,7 +8,7 @@ using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.BoardData;
 using CodeBase.Infrastructure.Services.StaticData.TileContentData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
-using CodeBase.Tower;
+using CodeBase.Towers;
 using CodeBase.Utilities;
 using UnityEngine;
 using static CodeBase.Utilities.Constants.Math;
@@ -102,7 +102,7 @@ namespace CodeBase.Infrastructure.Gameplay {
         occupiedTile.MakeConjunction(tiles);
       }
 
-      Tower.Tower tower = GetTower(type).With(x => x.ReceiveTargets(targets)).With(x => x.HideRadius());
+      Tower tower = GetTower(type).With(x => x.ReceiveTargets(targets)).With(x => x.HideRadius());
       placementTile.Content.SetOccupiedBy(tower);
       tower.transform.position = placementTile.transform.position;
 
@@ -121,9 +121,9 @@ namespace CodeBase.Infrastructure.Gameplay {
       tile.Content.OccupationTower.Recycle();
 
       foreach (BoardTile occupiedTile in occupiedTiles) {
-        SetTileGround(occupiedTile);
         occupiedTile.Content.ClearOccupation();
         occupiedTile.ClearOccupation();
+        SetTileGround(occupiedTile);
       }
 
       _playerService.AddCurrency(config.GoldValue);
@@ -200,7 +200,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       tile.ToggleArrowOff();
     }
 
-    private Tower.Tower GetTower(TowerType type) => _factory.CreateTower(type);
+    private Tower GetTower(TowerType type) => _factory.CreateTower(type);
 
     private bool FindPathsSuccessful() {
       foreach (BoardTile tile in _tiles) {

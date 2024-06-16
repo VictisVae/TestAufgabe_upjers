@@ -1,4 +1,4 @@
-﻿namespace CodeBase.Tower {
+﻿namespace CodeBase.Towers {
   public enum TowerType {
     Simple,
     Double,

@@ -1,7 +1,7 @@
 ﻿using CodeBase.Infrastructure.Services.Player;
 using UnityEngine;
 
-namespace CodeBase.Tower {
+namespace CodeBase.Towers {
   public class Target : MonoBehaviour {
     private Health _health;
     public void Construct(int health) => _health = new Health(health);

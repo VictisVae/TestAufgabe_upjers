@@ -2,7 +2,7 @@
 using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
-using CodeBase.Tower;
+using CodeBase.Towers;
 using UnityEngine;
 
 namespace CodeBase.Units {
@@ -15,6 +15,7 @@ namespace CodeBase.Units {
     protected IGameFactory _unitFactory;
     protected IPlayerService _playerService;
 
+    protected UnitType _type;
     protected int _bringsGold;
 
     public override bool GameUpdate() {
@@ -53,6 +54,7 @@ namespace CodeBase.Units {
       _unitMovement = new UnitMovement(transform, _model, config);
       float scale = config.Scale.RandomValueInRange;
       _bringsGold = config.Gold;
+      _type = config.Type;
       _model.localScale = new Vector3(scale, scale, scale);
       Target.Construct(config.Health);
     }

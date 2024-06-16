@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services;
-using CodeBase.Tower;
+using CodeBase.Towers;
 using CodeBase.UI;
 using CodeBase.Units;
 
@@ -12,10 +13,11 @@ namespace CodeBase.Infrastructure.Factory {
     GameBoard CreateGameBoard();
     TileContent Create(TileContentType type);
     UnitBase Create(UnitType type);
-    Tower.Tower CreateTower(TowerType towerType);
-    void Reclaim(FactoryObject unit);
+    Tower CreateTower(TowerType towerType);
     GameOverScreen CreateGameOverScreen();
+    void Reclaim(FactoryObject item, Enum itemType);
     Task Clear();
     WelcomeScreen CreateWelcomeScreen();
+    void WarmUp();
   }
 }

@@ -5,7 +5,7 @@ using CodeBase.Infrastructure.Services.Input;
 using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
-using CodeBase.Tower;
+using CodeBase.Towers;
 using CodeBase.Utilities;
 using UnityEngine;
 
@@ -156,7 +156,6 @@ namespace CodeBase.BoardContent {
         case TileContentType.SpawnPoint:
           return PlaceSpawnPoint;
         case TileContentType.Empty:
-        case TileContentType.Tower:
         default:
           return PlaceEmpty;
       }

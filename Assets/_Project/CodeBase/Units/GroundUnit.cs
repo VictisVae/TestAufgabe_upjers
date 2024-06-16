@@ -1,5 +1,5 @@
 ﻿namespace CodeBase.Units {
   public class GroundUnit : UnitBase {
-    public override void Recycle() => _unitFactory.Reclaim(this);
+    public override void Recycle() => _unitFactory.Reclaim(this, _type);
   }
 }

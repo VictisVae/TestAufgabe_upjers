@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CodeBase.Tower.Armory {
+namespace CodeBase.Towers.Armory {
   [RequireComponent(typeof(LineRenderer))]
   public class Laser : MonoBehaviour {
     private LineRenderer _lineRenderer;

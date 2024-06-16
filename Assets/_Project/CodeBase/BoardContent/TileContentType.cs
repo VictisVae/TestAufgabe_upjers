@@ -4,6 +4,5 @@
     Destination,
     Ground,
     SpawnPoint,
-    Tower
   }
 }

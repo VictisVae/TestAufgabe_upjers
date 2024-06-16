@@ -12,11 +12,12 @@ namespace CodeBase.Units {
       _playerService = playerService;
       float scale = config.Scale.RandomValueInRange;
       _bringsGold = config.Gold;
+      _type = UnitType.Air;
       _model.localScale = new Vector3(scale, scale, scale);
       Target.Construct(config.Health);
     }
 
-    public override void Recycle() => _unitFactory.Reclaim(this);
+    public override void Recycle() => _unitFactory.Reclaim(this, _type);
 
     public void SpawnItOn(BoardTile spawnPoint, BoardTile destinationPoint) {
       Vector3 transformLocalPosition = spawnPoint.transform.localPosition;

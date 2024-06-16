@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Services.StaticData.TowerData;
-using CodeBase.Tower.Armory;
+using CodeBase.Towers.Armory;
 using UnityEngine;
 
-namespace CodeBase.Tower {
+namespace CodeBase.Towers {
   [RequireComponent(typeof(TowerVisualRadius))]
   public class Tower : TileContent {
     [SerializeField]
@@ -39,7 +39,8 @@ namespace CodeBase.Tower {
       TowerType = config.BuildScheme.TowerType;
       _towerRecolor.SetTileType(_type);
     }
-
+    
+    public override void Recycle() => _gameFactory.Reclaim(this, TowerType);
     public void ShowRadius() => _towerRadius.ShowRadius();
     public void HideRadius() => _towerRadius.HideRadius();
     public void ReceiveTargets(Func<List<Target>> targets) => _towerLaser.ReceiveTargets(targets);

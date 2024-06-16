@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CodeBase.Tower {
+namespace CodeBase.Towers {
   [RequireComponent(typeof(Tower))]
   public class TowerVisualRadius : MonoBehaviour {
     [SerializeField]

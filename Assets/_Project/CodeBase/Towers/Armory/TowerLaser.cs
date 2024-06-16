@@ -5,7 +5,7 @@ using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Utilities;
 using UnityEngine;
 
-namespace CodeBase.Tower.Armory {
+namespace CodeBase.Towers.Armory {
   public class TowerLaser : MonoBehaviour {
     [SerializeField]
     private Transform _turretHead;

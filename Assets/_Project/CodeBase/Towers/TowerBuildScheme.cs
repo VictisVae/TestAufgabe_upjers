@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CodeBase.Tower {
+namespace CodeBase.Towers {
   [Serializable]
   public struct TowerBuildScheme {
     [SerializeField]

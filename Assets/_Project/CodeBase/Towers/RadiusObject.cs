@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CodeBase.Tower {
+namespace CodeBase.Towers {
   public class RadiusObject : MonoBehaviour {
     [SerializeField]
     private MeshRenderer _meshRenderer;

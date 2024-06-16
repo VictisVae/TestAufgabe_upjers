@@ -1,5 +1,5 @@
 ﻿using CodeBase.BoardContent;
-using CodeBase.Tower;
+using CodeBase.Towers;
 using UnityEngine;
 
 namespace CodeBase.UI {

@@ -54,6 +54,7 @@ namespace CodeBase.Infrastructure.States {
         _gameFactory.CreateWelcomeScreen();
       }
       
+      _gameFactory.WarmUp();
       _clearData = new List<MonoBehaviour>();
       HUD hud = _gameFactory.CreateHUD();
       GameBoard gameBoard = CreateGameBoard();
