@@ -57,6 +57,11 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void PlaceDestination(BoardTile tile, bool isSceneRunPlacement = false) {
+      if (tile.NeighborIsSpawnOrDestination) {
+        PlaceDestination(GetRandomEmptyTile());
+        return;
+      }
+      
       SetTileDestination(tile);
       FindPathsSuccessful();
 
@@ -129,6 +134,11 @@ namespace CodeBase.Infrastructure.Gameplay {
     }
 
     public void PlaceSpawnPoint(BoardTile tile, bool isSceneRunPlacement = false) {
+      if (tile.NeighborIsSpawnOrDestination) {
+        PlaceSpawnPoint(GetRandomEmptyTile());
+        return;
+      }
+
       SetTileSpawnPoint(tile);
       _spawnPoints.Add(tile);
 

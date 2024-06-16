@@ -68,7 +68,7 @@ namespace CodeBase.BoardContent {
       neighbor.NextTileOnOnPath = this;
       neighbor.ExitPoint = GetQuadSide(neighbor, direction);
       neighbor.PathDirection = direction;
-      return neighbor.Content.IsBlockingPath ? null : neighbor;
+      return neighbor.Content.IsGround ? null : neighbor;
     }
 
     public TileContent Content {
@@ -85,8 +85,25 @@ namespace CodeBase.BoardContent {
     public Direction PathDirection { get; private set; }
     public BoardTile NextTileOnOnPath { get; private set; }
     public bool HasPath => _distance != int.MaxValue;
-    public Vector3 ExitPoint { get; private set; }
+    public bool NeighborIsSpawnOrDestination {
+      get {
+        BoardTile[] neighbors = { _north, _east, _south, _west };
+
+        foreach (BoardTile neighbor in neighbors) {
+          if (neighbor is null) {
+            continue;
+          }
+          
+          if (neighbor.Content.IsDestination || neighbor.Content.IsSpawnPoint) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+    }
     public bool IsAlternative { get; set; }
+    public Vector3 ExitPoint { get; private set; }
 
     private class Conjunction {
       private readonly BoardTile[] _occupied;

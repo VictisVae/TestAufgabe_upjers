@@ -27,11 +27,11 @@ namespace CodeBase.BoardContent {
     public void SetOccupiedBy(ITower tower) => OccupationTower = tower;
     public void ClearOccupation() => OccupationTower = new NullTower();
     public bool IsDestination => _type == TileContentType.Destination;
+    public bool IsSpawnPoint => _type == TileContentType.SpawnPoint;
     public bool IsGround => _type == TileContentType.Ground;
     public bool IsEmpty => _type == TileContentType.Empty;
     public bool IsOccupied => OccupationTower is not NullTower;
     public TowerType TowerType => OccupationTower.TowerType;
-    public bool IsBlockingPath => _type is TileContentType.Ground;
     public ITower OccupationTower { get; private set; }
   }
 }
