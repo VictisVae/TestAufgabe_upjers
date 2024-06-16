@@ -19,9 +19,7 @@ namespace CodeBase.Units {
     protected int _bringsGold;
 
     public override bool GameUpdate() {
-      if (Target.IsAlive == false) {
-        _playerService.AddCurrency(_bringsGold);
-        Recycle();
+      if (Target.NoHealth) {
         return false;
       }
 
@@ -57,6 +55,13 @@ namespace CodeBase.Units {
       _type = config.Type;
       _model.localScale = new Vector3(scale, scale, scale);
       Target.Construct(config.Health);
+      Target.NoHealthEvent += OnUnitDies;
+    }
+
+    private void OnUnitDies() {
+      Recycle();
+      _playerService.AddCurrency(_bringsGold);
+      Target.NoHealthEvent -= OnUnitDies;
     }
 
     public void SpawnItOn(BoardTile spawnPoint) {
