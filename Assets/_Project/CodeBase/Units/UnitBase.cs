@@ -1,4 +1,4 @@
-﻿using CodeBase.BoardContent;
+﻿using CodeBase.Grid;
 using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
@@ -58,14 +58,14 @@ namespace CodeBase.Units {
       Target.NoHealthEvent += OnUnitDies;
     }
 
-    private void OnUnitDies() {
+    protected void OnUnitDies() {
       Recycle();
       _playerService.AddCurrency(_bringsGold);
       Target.NoHealthEvent -= OnUnitDies;
     }
 
-    public void SpawnItOn(BoardTile spawnPoint) {
-      transform.localPosition = spawnPoint.transform.localPosition;
+    public void SpawnItOn(GridTile spawnPoint) {
+      transform.localPosition = spawnPoint.WorldPosition;
       _unitMovement.SetDirectionTiles(spawnPoint, spawnPoint.NextTileOnOnPath);
       _unitMovement.PrepareIntro();
     }

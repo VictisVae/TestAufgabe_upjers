@@ -5,6 +5,7 @@
 
     public class AssetsPath {
       public const string GameBoard = nameof(GameBoard);
+      public const string GameGrid = nameof(GameGrid);
       public const string HUD = nameof(HUD);
       public const string GameOverScreen = nameof(GameOverScreen);
       public const string WelcomeScreen = nameof(WelcomeScreen);
@@ -28,6 +29,12 @@
       public const float QuarterTurn = 90.0f;
       public const float HalfTurn = 180.0f;
       public const float TripleQuarterTurn = 270.0f;
+    }
+    
+    public static class GridGraphics {
+      public const int VerticesPerQuad = 4;
+      public const int TrianglesPerQuad = 6;
+      public const int UVsPerQuad = 4;
     }
   }
 }

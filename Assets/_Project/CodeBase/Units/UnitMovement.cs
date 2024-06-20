@@ -1,4 +1,5 @@
 ﻿using CodeBase.BoardContent;
+using CodeBase.Grid;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
 using CodeBase.Utilities;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace CodeBase.Units {
     private readonly float _pathOffset;
     protected Vector3 _positionFrom, _positionTo;
     protected float _progressFactor;
-    protected BoardTile _tileFrom, _tileTo;
+    protected GridTile _tileFrom, _tileTo;
     private Direction _direction;
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
@@ -26,14 +27,14 @@ namespace CodeBase.Units {
       _speed = config.Speed.RandomValueInRange;
     }
 
-    public void SetDirectionTiles(BoardTile tileFrom, BoardTile tileTo) {
+    public void SetDirectionTiles(GridTile tileFrom, GridTile tileTo) {
       _tileFrom = tileFrom;
       _tileTo = tileTo;
       _progress = 0f;
     }
 
     public virtual void PrepareIntro() {
-      _positionFrom = _tileFrom.transform.localPosition;
+      _positionFrom = _tileFrom.WorldPosition;
       _positionTo = _tileFrom.ExitPoint;
       _direction = _tileFrom.PathDirection;
       _directionChange = DirectionChange.None;
@@ -67,7 +68,7 @@ namespace CodeBase.Units {
     public void MultiplyProgress() => _progress *= _progressFactor;
 
     protected virtual void PrepareOutro() {
-      _positionTo = _tileFrom.transform.localPosition;
+      _positionTo = _tileFrom.WorldPosition;
       _directionChange = DirectionChange.None;
       _directionAngleTo = _direction.GetAngle();
       _modelTransform.localPosition = new Vector3(_pathOffset, 0.0f);
@@ -120,7 +121,7 @@ namespace CodeBase.Units {
       _progressFactor = _speed * UnitDirectionMultiplier;
     }
 
-    public BoardTile TileTo => _tileTo;
+    public GridTile TileTo => _tileTo;
     public bool NoDirectionChange => _directionChange == DirectionChange.None;
     public bool IsProgressExists => _progress >= 1;
     private float SmoothAngle => Mathf.LerpUnclamped(_directionAngleFrom, _directionAngleTo, _progress);

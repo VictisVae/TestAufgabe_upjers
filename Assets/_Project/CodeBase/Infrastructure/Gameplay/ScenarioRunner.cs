@@ -1,4 +1,5 @@
-﻿using CodeBase.Infrastructure.Services.MonoEvents;
+﻿using CodeBase.Grid;
+using CodeBase.Infrastructure.Services.MonoEvents;
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.UI;
@@ -9,7 +10,7 @@ namespace CodeBase.Infrastructure.Gameplay {
     private readonly IPlayerService _playerService;
     private readonly IUnitSpawner _unitSpawner;
     private readonly GameScenario _scenario;
-    private readonly GameBoard _board;
+    private readonly GridController _gridController;
     private readonly GameOverScreen _gameOverScreen;
     private readonly HUD _hud;
     private GameScenario.State _activeScenario;
@@ -17,12 +18,12 @@ namespace CodeBase.Infrastructure.Gameplay {
     private float _spawnProgress;
     private bool _isPaused;
 
-    public ScenarioRunner(IUnitSpawner unitSpawner, IMonoEventsProvider monoEventsProvider, IStaticDataService staticDataService, IPlayerService playerService, GameBoard board, HUD hud, GameOverScreen gameOverScreen) {
+    public ScenarioRunner(IUnitSpawner unitSpawner, IMonoEventsProvider monoEventsProvider, IStaticDataService staticDataService, IPlayerService playerService, GridController gridController, HUD hud, GameOverScreen gameOverScreen) {
       _unitSpawner = unitSpawner;
       _monoEventsProvider = monoEventsProvider;
       _playerService = playerService;
       _scenario = staticDataService.GetStaticData<GameScenario>();
-      _board = board;
+      _gridController = gridController;
       _hud = hud;
       _gameOverScreen = gameOverScreen;
       _wavesLeft = TotalWaves;
@@ -48,7 +49,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       }
 
       _unitSpawner.Collection.GameUpdate();
-      _board.GameUpdate();
+      _gridController.GameUpdate();
     }
 
     private void WaveCompleted() {

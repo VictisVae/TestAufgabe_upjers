@@ -1,4 +1,5 @@
-﻿using CodeBase.Infrastructure.Factory;
+﻿using CodeBase.Grid;
+using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.Player;
@@ -23,7 +24,7 @@ namespace CodeBase.UI {
     private IUnitSpawner _unitSpawner;
     private IGameStateMachine _gameStateMachine;
     private IGameFactory _gameFactory;
-    private GameBoard _gameBoard;
+    private GridController _gridController;
     protected override void Awake() => _quitButton.AddListener(Application.Quit);
 
     protected override void OnDestroy() {
@@ -31,11 +32,11 @@ namespace CodeBase.UI {
       _quitButton.RemoveAllListeners();
     }
 
-    public void Construct(IPlayerService playerService, IUnitSpawner unitSpawner, GameBoard gameBoard) {
+    public void Construct(IPlayerService playerService, IUnitSpawner unitSpawner, GridController gridController) {
       _gameStateMachine = GlobalService.Container.GetSingle<IGameStateMachine>();
       _gameFactory = GlobalService.Container.GetSingle<IGameFactory>();
       _playerService = playerService;
-      _gameBoard = gameBoard;
+      _gridController = gridController;
       _unitSpawner = unitSpawner;
       _restartButton.AddListener(Restart);
       _canvas.enabled = false;
@@ -45,7 +46,7 @@ namespace CodeBase.UI {
       _canvas.enabled = true;
       _gameOverText.text = isVictory ? "Victory!" : "Defeat";
       _unitSpawner.Collection.Clear();
-      _gameBoard.ClearLists();
+      _gridController.ClearLists();
     }
 
     private async void Restart() {

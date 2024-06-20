@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CodeBase.BoardContent {
   [SelectionBase]
-  public class TileContent : FactoryObject {
+  public class TileContent : FactoryObject, ITileContent {
     [SerializeField]
     protected TileContentType _type;
     private IGameFactory _gameFactory;
@@ -14,6 +14,7 @@ namespace CodeBase.BoardContent {
       ClearOccupation();
     }
 
+    public void SetPosition(Vector3 position) => transform.localPosition = position;
     public override void Recycle() => _gameFactory.Reclaim(this, _type);
 
     public void GameUpdate() {

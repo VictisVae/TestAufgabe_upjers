@@ -1,4 +1,4 @@
-﻿using CodeBase.BoardContent;
+﻿using CodeBase.Grid;
 using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Services.Player;
 using CodeBase.Infrastructure.Services.StaticData.UnitData;
@@ -15,12 +15,13 @@ namespace CodeBase.Units {
       _type = UnitType.Air;
       _model.localScale = new Vector3(scale, scale, scale);
       Target.Construct(config.Health);
+      Target.NoHealthEvent += OnUnitDies;
     }
 
     public override void Recycle() => _unitFactory.Reclaim(this, _type);
 
-    public void SpawnItOn(BoardTile spawnPoint, BoardTile destinationPoint) {
-      Vector3 transformLocalPosition = spawnPoint.transform.localPosition;
+    public void SpawnItOn(GridTile spawnPoint, GridTile destinationPoint) {
+      Vector3 transformLocalPosition = spawnPoint.WorldPosition;
       transform.localPosition = new Vector3(transformLocalPosition.x, transform.localPosition.y, transformLocalPosition.z) ;
       _unitMovement.SetDirectionTiles(spawnPoint, destinationPoint);
       _unitMovement.PrepareIntro();

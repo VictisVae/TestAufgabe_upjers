@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using CodeBase.BoardContent;
 using CodeBase.Infrastructure.Factory;
@@ -11,57 +11,39 @@ using CodeBase.Infrastructure.Services.StaticData.TowerData;
 using CodeBase.Towers;
 using CodeBase.Utilities;
 using UnityEngine;
-using static CodeBase.Utilities.Constants.Math;
 
-namespace CodeBase.Infrastructure.Gameplay {
-  public class GameBoard : MonoBehaviour {
-    private readonly Queue<BoardTile> _searchFrontier = new Queue<BoardTile>();
-    private readonly List<BoardTile> _spawnPoints = new List<BoardTile>();
-    private readonly List<BoardTile> _destinationPoints = new List<BoardTile>();
-    private readonly List<TileContent> _contentToUpdate = new List<TileContent>();
-    [SerializeField]
-    private Transform _ground;
-    private BoardTile[] _tiles;
-    private IStaticDataService _staticDataService;
-    private IRandomService _randomService;
-    private IGameFactory _factory;
-    private IPlayerService _playerService;
-    private Vector2Int _boardSize;
+namespace CodeBase.Grid {
+  public class GridController {
+    private readonly IGameFactory _factory;
+    private readonly IStaticDataService _staticDataService;
+    private readonly IPlayerService _playerService;
+    private readonly IRandomService _randomService;
+    private readonly Queue<GridTile> _searchFrontier = new Queue<GridTile>();
+    private readonly List<GridTile> _spawnPoints = new List<GridTile>();
+    private readonly List<GridTile> _destinationPoints = new List<GridTile>();
+    private readonly List<ITileContent> _contentToUpdate = new List<ITileContent>();
+    private GridSystem _gridSystem;
+    private GameGridView _gridView;
 
-    public void Initialize
-      (IStaticDataService staticDataService, IRandomService randomService, IGameFactory contentFactory, IPlayerService playerService) {
+    public GridController(IGameFactory factory, IStaticDataService staticDataService, IPlayerService playerService, IRandomService randomService) {
+      _factory = factory;
+      _staticDataService = staticDataService;
       _playerService = playerService;
       _randomService = randomService;
-      _factory = contentFactory;
-      _staticDataService = staticDataService;
-      _boardSize = staticDataService.GetStaticData<BoardConfig>().BoardSize;
-      _ground.localScale = new Vector3(_boardSize.x, _boardSize.y, 1.0f);
-      Vector2 offset = new Vector2((_boardSize.x - 1) * Half, (_boardSize.y - 1) * Half);
-      _tiles = new BoardTile[_boardSize.x * _boardSize.y];
-
-      for (int i = 0, y = 0; y < _boardSize.y; y++) {
-        for (int x = 0; x < _boardSize.x; x++, i++) {
-          BoardTile tile = CreateTile(i, x, offset, y);
-          SetNeighbours(_boardSize, y, tile, i, x);
-          SetAlternativePath(tile, x, y);
-        }
-      }
-
-      Clear();
     }
 
     public void GameUpdate() {
-      foreach (TileContent tileContent in _contentToUpdate) {
+      foreach (ITileContent tileContent in _contentToUpdate) {
         tileContent.GameUpdate();
       }
     }
 
-    public void PlaceDestination(BoardTile tile, bool isSceneRunPlacement = false) {
+    public void PlaceDestination(GridTile tile, bool isSceneRunPlacement = false) {
       if (tile.NeighborIsSpawnOrDestination) {
         PlaceDestination(GetRandomEmptyTile());
         return;
       }
-      
+
       SetTileDestination(tile);
       FindPathsSuccessful();
 
@@ -77,7 +59,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       _playerService.AddCurrency(config.GoldValue);
     }
 
-    public void PlaceGround(BoardTile tile) {
+    public void PlaceGround(GridTile tile) {
       SetTileGround(tile);
 
       if (FindPathsSuccessful()) {
@@ -90,7 +72,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       FindPathsSuccessful();
     }
 
-    public void RemoveGround(BoardTile tile) {
+    public void RemoveGround(GridTile tile) {
       if (tile.Content.IsGround == false || tile.Content.IsOccupied) {
         return;
       }
@@ -102,30 +84,30 @@ namespace CodeBase.Infrastructure.Gameplay {
       _playerService.AddCurrency(config.GoldValue);
     }
 
-    public void PlaceTower(BoardTile[] tiles, TowerType type, Func<List<Target>> targets) {
-      BoardTile placementTile = tiles[0];
+    public void PlaceTower(GridTile[] tiles, TowerType type, Func<List<Target>> targets) {
+      GridTile placementTile = tiles[0];
 
-      foreach (BoardTile occupiedTile in tiles) {
+      foreach (GridTile occupiedTile in tiles) {
         occupiedTile.MakeConjunction(tiles);
       }
 
       Tower tower = GetTower(type).With(x => x.ReceiveTargets(targets)).With(x => x.HideRadius());
       placementTile.Content.SetOccupiedBy(tower);
-      tower.transform.position = placementTile.transform.position;
+      tower.transform.position = GridSystem.GetWorldPosition(placementTile.TilePosition);
 
-      foreach (BoardTile occupiedTile in tiles) {
+      foreach (GridTile occupiedTile in tiles) {
         occupiedTile.Content.SetOccupiedBy(tower);
       }
 
       _playerService.SpendCurrency(_staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(type).GoldValue);
     }
 
-    public void RemoveTower(BoardTile tile) {
+    public void RemoveTower(GridTile tile) {
       TowerConfig config = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(tile.Content.TowerType);
-      BoardTile[] occupiedTiles = tile.GetOccupied();
+      GridTile[] occupiedTiles = tile.GetOccupied();
       tile.Content.OccupationTower.Recycle();
 
-      foreach (BoardTile occupiedTile in occupiedTiles) {
+      foreach (GridTile occupiedTile in occupiedTiles) {
         occupiedTile.Content.ClearOccupation();
         occupiedTile.ClearOccupation();
       }
@@ -133,7 +115,7 @@ namespace CodeBase.Infrastructure.Gameplay {
       _playerService.AddCurrency(config.GoldValue);
     }
 
-    public void PlaceSpawnPoint(BoardTile tile, bool isSceneRunPlacement = false) {
+    public void PlaceSpawnPoint(GridTile tile, bool isSceneRunPlacement = false) {
       if (tile.NeighborIsSpawnOrDestination) {
         PlaceSpawnPoint(GetRandomEmptyTile());
         return;
@@ -150,24 +132,10 @@ namespace CodeBase.Infrastructure.Gameplay {
       _playerService.AddCurrency(config.GoldValue);
     }
 
-    public void PlaceEmpty(BoardTile tile) => SetTileEmpty(tile);
-    public BoardTile GetTile(float posX, float posZ) => IsInBorders(posX, posZ, out int x, out int y) ? CastIntersectionIndex(x, y) : null;
-
-    public BoardTile GetRandomEmptyTile() {
-      BoardTile tile = _tiles[_randomService.Range(0, _tiles.Length)];
-
-      while (tile.Content.IsEmpty == false) {
-        tile = _tiles[_randomService.Range(0, _tiles.Length)];
-      }
-
-      return tile;
-    }
-
-    public BoardTile GetSpawnPoint(int index) => _spawnPoints[index];
-    public BoardTile GetDestinationPoints(int index) => _destinationPoints[index];
+    public void PlaceEmpty(GridTile tile) => SetTileEmpty(tile);
 
     public void Clear() {
-      foreach (BoardTile tile in _tiles) {
+      foreach (GridTile tile in _gridSystem.GridTileArray) {
         SetTileEmpty(tile);
       }
 
@@ -176,6 +144,10 @@ namespace CodeBase.Infrastructure.Gameplay {
       PlaceSpawnPoint(GetRandomEmptyTile(), true);
     }
 
+    public GridTile GetRandomEmptyTile() => _gridSystem.GetRandomEmptyTile(_randomService);
+    public GridTile GetSpawnPoint(int index) => _spawnPoints[index];
+    public GridTile GetDestinationPoints(int index) => _destinationPoints[index];
+
     public void ClearLists() {
       _contentToUpdate.Clear();
       _searchFrontier.Clear();
@@ -183,36 +155,39 @@ namespace CodeBase.Infrastructure.Gameplay {
       _spawnPoints.Clear();
     }
 
-    private bool IsInBorders(float posX, float posZ, out int x, out int y) {
-      x = (int)(posX + _boardSize.x * Half);
-      y = (int)(posZ + _boardSize.y * Half);
-      return x >= 0 && x < _boardSize.x && y >= 0 && y < _boardSize.y;
+    public void InitialiseGridSystem() => _gridSystem = new GridSystem(_staticDataService.GetStaticData<GridConfig>());
+
+    public void InitialiseGridView() {
+      GridConfig gridConfig = _staticDataService.GetStaticData<GridConfig>();
+      _gridView = _factory.CreateGameGrid();
+      _gridView.InitializeGroundView(gridConfig.GridSize);
+      _gridView.InitializeArrowsView(_gridSystem.GridTileArray, gridConfig.CellSize, gridConfig.ArrowSize);
     }
 
-    private void SetTileEmpty(BoardTile tile) {
-      tile.Content = _factory.Create(TileContentType.Empty);
-      tile.ToggleArrowOn();
-    }
+    public GridTile GetTile(Vector3 worldPosition) => _gridSystem.GetGridTile(_gridSystem.GetGridPosition(worldPosition));
+    public bool IsValidGridPosition(Vector3 worldPosition) => _gridSystem.IsValidGridPosition(_gridSystem.GetGridPosition(worldPosition));
 
-    private void SetTileSpawnPoint(BoardTile tile) {
+    private void SetTileEmpty(GridTile tile) => tile.Content = new EmptyContent();
+
+    private void SetTileSpawnPoint(GridTile tile) {
       tile.Content = _factory.Create(TileContentType.SpawnPoint);
-      tile.ToggleArrowOff();
+      UpdateTileArrowView(tile, true);
     }
 
-    private void SetTileDestination(BoardTile tile) {
+    private void SetTileDestination(GridTile tile) {
       tile.Content = _factory.Create(TileContentType.Destination);
-      tile.ToggleArrowOff();
+      UpdateTileArrowView(tile, true);
     }
 
-    private void SetTileGround(BoardTile tile) {
+    private void SetTileGround(GridTile tile) {
       tile.Content = _factory.Create(TileContentType.Ground);
-      tile.ToggleArrowOff();
+      UpdateTileArrowView(tile, true);
     }
 
     private Tower GetTower(TowerType type) => _factory.CreateTower(type);
 
     private bool FindPathsSuccessful() {
-      foreach (BoardTile tile in _tiles) {
+      foreach (GridTile tile in _gridSystem.GridTileArray) {
         if (tile.Content.IsDestination) {
           tile.NullifyDestination();
           _searchFrontier.Enqueue(tile);
@@ -227,48 +202,35 @@ namespace CodeBase.Infrastructure.Gameplay {
 
       FrontierSearching();
 
-      foreach (BoardTile tile in _tiles) {
+      foreach (GridTile tile in _gridSystem.GridTileArray) {
         if (tile.HasPath == false) {
           return false;
         }
       }
 
-      foreach (BoardTile tile in _tiles) {
-        tile.ShowPath();
-      }
-
+      UpdatePathView();
       return true;
     }
 
-    private BoardTile CastIntersectionIndex(int x, int y) => _tiles[x + y * _boardSize.x];
-
-    private BoardTile CreateTile(int i, int x, Vector2 offset, int y) {
-      BoardTile tile = _tiles[i] = Instantiate(_staticDataService.GetStaticData<BoardConfig>().BoardTilePrefab, transform, false);
-      tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
-      return tile;
-    }
-
-    private void SetNeighbours(Vector2Int size, int y, BoardTile tile, int i, int x) {
-      if (y > 0) {
-        BoardTile.MakeNorthSouthNeighbour(tile, _tiles[i - size.x]);
-      }
-
-      if (x > 0) {
-        BoardTile.MakeEastWestNeighbour(tile, _tiles[i - 1]);
+    private void UpdatePathView() {
+      foreach (GridTile tile in _gridSystem.GridTileArray) {
+        UpdateTileArrowView(tile);
       }
     }
 
-    private void SetAlternativePath(BoardTile tile, int x, int y) {
-      tile.IsAlternative = (x & 1) == 0;
+    private void UpdateTileArrowView(GridTile tile, bool isHidden = false) {
+      Vector2[] pathView = tile.GetPathView();
 
-      if ((y & 1) == 0) {
-        tile.IsAlternative = !tile.IsAlternative;
+      if (isHidden) {
+        pathView = new Vector2[4];
       }
+
+      _gridView.UpdateArrowView(tile.GetUVIndexes(), pathView);
     }
 
     private void FrontierSearching() {
       while (_searchFrontier.Count > 0) {
-        BoardTile tile = _searchFrontier.Dequeue();
+        GridTile tile = _searchFrontier.Dequeue();
 
         if (tile == null) {
           continue;

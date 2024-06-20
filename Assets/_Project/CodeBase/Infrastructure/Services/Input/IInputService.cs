@@ -5,6 +5,7 @@ namespace CodeBase.Infrastructure.Services.Input {
     bool KeyDown(KeyCode key);
     bool Key(KeyCode key);
     bool MouseButtonDown(int buttonIndex);
-    Vector3 MousePosition { get; }
+    Vector3 MouseWorldPosition { get; }
+    bool HasPosition(out RaycastHit hit);
   }
 }

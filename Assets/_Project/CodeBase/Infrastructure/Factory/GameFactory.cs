@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CodeBase.BoardContent;
-using CodeBase.Infrastructure.Gameplay;
+using CodeBase.Grid;
 using CodeBase.Infrastructure.Pool;
 using CodeBase.Infrastructure.Services.AssetManagement;
 using CodeBase.Infrastructure.Services.Player;
@@ -65,7 +65,7 @@ namespace CodeBase.Infrastructure.Factory {
       }
     }
 
-    public GameBoard CreateGameBoard() => _asset.Initialize<GameBoard>(Constants.AssetsPath.GameBoard);
+    public GameGridView CreateGameGrid() => _asset.Initialize<GameGridView>(Constants.AssetsPath.GameGrid);
     public HUD CreateHUD() => _asset.Initialize<HUD>(Constants.AssetsPath.HUD);
     public GameOverScreen CreateGameOverScreen() => _asset.Initialize<GameOverScreen>(Constants.AssetsPath.GameOverScreen);
     public WelcomeScreen CreateWelcomeScreen() => _asset.Initialize<WelcomeScreen>(Constants.AssetsPath.WelcomeScreen);

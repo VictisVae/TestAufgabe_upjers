@@ -7,8 +7,8 @@ namespace CodeBase.Units {
     public AirUnitMovement(Transform unitTransform, Transform modelTransform, UnitConfig config) : base(unitTransform, modelTransform, config) {}
 
     public override void PrepareIntro() {
-      _positionFrom = _tileFrom.transform.localPosition;
-      _positionTo = _tileTo.transform.localPosition;
+      _positionFrom = _tileFrom.WorldPosition;
+      _positionTo = _tileTo.WorldPosition;
       _unitTransform.localRotation = Quaternion.LookRotation(_positionTo - _positionFrom);
       _progressFactor = 0.1f * _speed;
     }

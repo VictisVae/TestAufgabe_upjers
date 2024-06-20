@@ -1,4 +1,5 @@
 ﻿using System;
+using CodeBase.Grid;
 using CodeBase.Infrastructure.Factory;
 using CodeBase.Infrastructure.Gameplay;
 using CodeBase.Infrastructure.Services.Input;
@@ -17,7 +18,7 @@ namespace CodeBase.BoardContent {
     private readonly IStaticDataService _staticDataService;
     private readonly IMonoEventsProvider _monoEventsProvider;
     private readonly Camera _camera;
-    private readonly GameBoard _board;
+    private readonly GridController _gridController;
     private FactoryObject _flyingTileContent;
     private TowerType _currentTowerType = TowerType.Simple;
     private Func<bool> _placementAvailable;
@@ -29,14 +30,14 @@ namespace CodeBase.BoardContent {
 
     public TileContentBuilder
       (IGameFactory gameFactory, IInputService input, IUnitSpawner unitSpawner, IStaticDataService staticDataService,
-        IMonoEventsProvider monoEventsProvider, GameBoard board) {
+        IMonoEventsProvider monoEventsProvider, GridController gridController) {
       _camera = Camera.main;
       _gameFactory = gameFactory;
       _input = input;
       _staticDataService = staticDataService;
       _monoEventsProvider = monoEventsProvider;
       _unitSpawner = unitSpawner;
-      _board = board;
+      _gridController = gridController;
     }
 
     private void Update() {
@@ -46,7 +47,7 @@ namespace CodeBase.BoardContent {
       }
 
       Plane ground = new Plane(Vector3.up, Vector3.zero);
-      Ray ray = TouchRay;
+      Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
       if (ground.Raycast(ray, out float position)) {
         if (_input.MouseButtonDown(0)) {
@@ -84,11 +85,11 @@ namespace CodeBase.BoardContent {
         return;
       }
 
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+      if (_input.HasPosition(out RaycastHit hit) == false) {
         return;
       }
 
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      GridTile tile = _gridController.GetTile(hit.point);
 
       if (tile.Content.IsOccupied) {
         SellTower(tile);
@@ -143,8 +144,8 @@ namespace CodeBase.BoardContent {
       _placementOnClick = PlaceTower;
     }
 
-    private void SellTower(BoardTile tile) => _board.RemoveTower(tile);
-    private void SellGround(BoardTile tile) => _board.RemoveGround(tile);
+    private void SellTower(GridTile tile) => _gridController.RemoveTower(tile);
+    private void SellGround(GridTile tile) => _gridController.RemoveGround(tile);
     private void RestrictFlyingBuilding() => _flyingBuildingAllowed = false;
 
     private Action PlacementOnClick(TileContentType type) {
@@ -162,16 +163,17 @@ namespace CodeBase.BoardContent {
     }
 
     private bool IsTowerPlacementPossible() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+      if (_input.HasPosition(out RaycastHit hit) == false) {
         return false;
       }
 
       TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(_currentTowerType);
       Vector2Int[] scheme = towerConfig.BuildScheme.GetPlacementScheme();
-      BoardTile[] potentialOccupied = new BoardTile[scheme.Length];
+      GridTile[] potentialOccupied = new GridTile[scheme.Length];
 
       for (int i = 0; i < scheme.Length; i++) {
-        BoardTile tile = _board.GetTile(hit.point.x + scheme[i].x, hit.point.z + scheme[i].y);
+        Vector3 worldPosition = new Vector3(hit.point.x + scheme[i].x, 0, hit.point.z + scheme[i].y);
+        GridTile tile = _gridController.GetTile(worldPosition);
         potentialOccupied[i] = tile;
 
         if (tile == null || tile.Content.IsGround == false || tile.Content.IsOccupied) {
@@ -183,58 +185,59 @@ namespace CodeBase.BoardContent {
     }
 
     private void PlaceTower() {
-      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
+      Vector3 mouseWorldPosition = _input.MouseWorldPosition;
       TowerConfig towerConfig = _staticDataService.GetStaticData<TowerContentStorage>().GetTowerConfig(_currentTowerType);
       Vector2Int[] scheme = towerConfig.BuildScheme.GetPlacementScheme();
-      BoardTile[] potentialOccupied = new BoardTile[scheme.Length];
+      GridTile[] potentialOccupied = new GridTile[scheme.Length];
 
       for (int i = 0; i < scheme.Length; i++) {
-        BoardTile tile = _board.GetTile(hit.point.x + scheme[i].x, hit.point.z + scheme[i].y);
+        Vector3 worldPosition = new Vector3(mouseWorldPosition.x + scheme[i].x, 0, mouseWorldPosition.z + scheme[i].y);
+        GridTile tile = _gridController.GetTile(worldPosition);
         potentialOccupied[i] = tile;
       }
 
-      _board.PlaceTower(potentialOccupied, _currentTowerType, () => _unitSpawner.Collection.Targets);
+      _gridController.PlaceTower(potentialOccupied, _currentTowerType, () => _unitSpawner.Collection.Targets);
     }
 
     private bool IsTilePlacementPossible() {
-      if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1) == false) {
+      if (_input.HasPosition(out RaycastHit hit) == false) {
         return false;
       }
 
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
+      if (_gridController.IsValidGridPosition(hit.point) == false) {
+        return false;
+      }
+
+      GridTile tile = _gridController.GetTile(hit.point);
       return tile.Content.IsEmpty;
     }
 
     private void PlaceSpawnPoint() {
-      if (_board.SpawnPointCount >= 5) {
+      if (_gridController.SpawnPointCount >= 5) {
         return;
       }
 
-      BoardTile tile = _board.GetRandomEmptyTile();
-      _board.PlaceSpawnPoint(tile);
+      GridTile tile = _gridController.GetRandomEmptyTile();
+      _gridController.PlaceSpawnPoint(tile);
     }
 
     private void PlaceDestination() {
-      if (_board.DestinationPointCount >= 5) {
+      if (_gridController.DestinationPointCount >= 5) {
         return;
       }
 
-      BoardTile tile = _board.GetRandomEmptyTile();
-      _board.PlaceDestination(tile);
+      GridTile tile = _gridController.GetRandomEmptyTile();
+      _gridController.PlaceDestination(tile);
     }
 
     private void PlaceGround() {
-      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      _board.PlaceGround(tile);
+      GridTile tile = _gridController.GetTile(_input.MouseWorldPosition);
+      _gridController.PlaceGround(tile);
     }
 
     private void PlaceEmpty() {
-      Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, 1);
-      BoardTile tile = _board.GetTile(hit.point.x, hit.point.z);
-      _board.PlaceEmpty(tile);
+      GridTile tile = _gridController.GetTile(_input.MouseWorldPosition);
+      _gridController.PlaceEmpty(tile);
     }
-
-    private Ray TouchRay => _camera.ScreenPointToRay(_input.MousePosition);
   }
 }
